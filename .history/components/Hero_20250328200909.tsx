@@ -7,8 +7,7 @@ const Hero = () => {
         {/* Hero */}
         <div className="flex justify-center text-5xl font-medium w-full">
           <div className="leading-20">
-            <h1>&quot;Your Art,</h1>{" "}
-            <h1 className="ml-18">Your Legacy&quot;</h1>
+            <h1>\"Your Art,</h1> <h1 className="ml-18">Your Legacy\"</h1>
           </div>
         </div>
         <div className="w-full flex justify-center">
