@@ -1,36 +1,28 @@
-import { NavLink } from "@/utils/Navlink";
-import Image from "next/image";
-import Link from "next/link";
 import { CiSearch } from "react-icons/ci";
 import { SlArrowDown } from "react-icons/sl";
+import { SignedOutProfile, SignInBtn } from "./Auth";
+import NavbarClient from "./NavbarClient";
 
-const Navbar = () => {
+const Navbar = async () => {
   return (
-    <nav className="flex justify-between mt-10 border-2 border-slate-500 h-20 rounded-full">
+    <nav className="flex relative justify-between mt-10 border border-slate-500 h-20 rounded-full">
       {/* Image */}
-      <div className="h-full w-40">
-        <Image
-          src="/images/profile.png"
-          alt="profiles"
-          className="h-full w-20"
-          width={100}
-          height={100}
-          objectFit="cover"
-          priority
-        />
+      <div className="absolute left-0 top-0 h-full w-20">
+        <SignedOutProfile />
       </div>
       {/* Search */}
-      <div className="flex items-center h-full w-full mx-10">
-        <CiSearch size={24} />
-        <span>SEARCH HERE</span>
+      <div className="flex items-center h-full w-full mx-10 relative">
+        <CiSearch size={24} color="gray" className="absolute left-22" />
+        <input
+          type="text"
+          placeholder="SEARCH HERE"
+          className="input-custom ml-20 pl-10 relative pr-4 py-2 w-full  rounded-full "
+        />
       </div>
       {/* NavLink */}
       <ul className="flex items-center space-x-10">
-        {NavLink.map((nav, index) => (
-          <Link key={index} href={nav.href}>
-            {nav.label}
-          </Link>
-        ))}
+        <NavbarClient />
+        <SignInBtn />
         <div className="border h-full w-[80px] rounded-full flex justify-center items-center text-2xl">
           <span className="mr-1">EN</span>
           <SlArrowDown size={18} />

@@ -11,11 +11,11 @@
 
 @layer components {
   .input-custom {
-    @apply border border-gray-300 rounded-md outline-none transition-all;
+    @apply cursor-pointer border border-gray-300 rounded-md outline-none transition-all;
     @apply focus:border-zinc-800 focus:ring-2 focus:ring-zinc-200;
   }
-  .button-custom {
-    @apply cursor-pointer bg-primary text-text rounded-2xl;
+  .botton-custom {
+    @apply bg-primary text-text rounded-2xl;
     @apply hover:bg-zinc-700 transition-all duration-500 ease-in-out;
   }
 }

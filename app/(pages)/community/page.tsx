@@ -1,4 +1,10 @@
+import CommuMainContainer from "@/components/community/CommuMainContainer";
+
 const CommunityPage = () => {
-  return <div>CommunityPage</div>;
+  return (
+    <>
+      <CommuMainContainer />
+    </>
+  );
 };
 export default CommunityPage;

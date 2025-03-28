@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Literata } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const literata = Literata({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "300",
+  style: "italic",
+  variable: "--literata",
 });
 
 export const metadata: Metadata = {
@@ -23,12 +22,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${literata.variable}  antialiased`}>
+          <ClerkLoading>
+            <div className="flex items-center justify-center h-screen text-2xl">
+              LOADING...
+            </div>
+          </ClerkLoading>
+          <div className="max-w-[1600px] mx-auto px-10">
+            <Navbar />
+
+            {children}
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

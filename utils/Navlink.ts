@@ -1,18 +1,22 @@
 export const NavLink = [
   {
+    label: "HOME",
+    href: "/",
+  },
+  {
     label: "SHOP",
-    href: "shop",
+    href: "/shop",
   },
   {
     label: "GALLERY",
-    href: "gallery",
+    href: "/gallery",
   },
   {
-    label: "AUCTION",
-    href: "auction",
+    label: "LEARNING",
+    href: "/learning",
   },
   {
     label: "COMMUNITY",
-    href: "community",
+    href: "/community",
   },
 ];

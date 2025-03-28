@@ -18,7 +18,7 @@ const Hero = () => {
               <br />
               และการเก็บสะสมผลงานที่มีคุณค่า
             </h3>
-            <button className="button-custom text-xl font-light py-2 px-10 mt-20">
+            <button className="text-xl bg-primary font-light text-text rounded-3xl py-2 px-10 mt-20">
               GALLERY
             </button>
           </div>

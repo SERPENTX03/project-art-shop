@@ -17,10 +17,7 @@ model User {
   clerkId      String    @unique
   email        String
   profileImage String
-  firstName    String?
-  lastName     String?
-  username     String?
-  role         Role      @default(USER)
+  role         Role
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   galleries    Gallery[]
