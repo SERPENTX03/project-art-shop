@@ -29,12 +29,13 @@ export default function CreateGalleryClient({ serverState }: Props) {
   const { register, control } = useFormContext();
 
   useEffect(() => {
-    if (!serverState.message) return;
-
-    if (serverState.success) {
-      toast.success(serverState.message);
-    } else {
-      toast.error(serverState.message);
+    const showToast = () => {
+      serverState.success
+        ? toast.success(serverState.message)
+        : toast.error(serverState.message);
+    };
+    if (serverState.message) {
+      showToast();
     }
   }, [serverState]);
 

@@ -25,11 +25,7 @@ export default function AdminGalleryPage() {
       const res = await axios.get("/api/admin/galleries");
       setGalleries(res.data);
     } catch (error) {
-      toast.error(
-        `Failed to fetch galleries: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+      toast.error("Failed to fetch galleries");
     } finally {
       setLoading(false);
     }
@@ -41,11 +37,7 @@ export default function AdminGalleryPage() {
       toast.success("Status updated");
       fetchGalleries();
     } catch (error) {
-      toast.error(
-        `Failed to update status ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
+      toast.error("Failed to update status");
     }
   };
 
