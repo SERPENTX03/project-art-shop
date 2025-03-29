@@ -1,5 +1,5 @@
 import prisma from "@/config/db";
-// import { requireAdmin } from "@/middleware/auth";
+import { requireAdmin } from "@/middleware/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
