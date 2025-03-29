@@ -1,11 +1,11 @@
 import CardMainContainer from "@/components/cardgalleries/CardMainContainer";
 import Hero from "@/components/Hero";
 
-const HomePage = ({
+export default function HomePage({
   searchParams,
 }: {
   searchParams?: { category?: string };
-}) => {
+}) {
   const params = searchParams || {};
 
   return (
@@ -14,5 +14,4 @@ const HomePage = ({
       <CardMainContainer searchParams={params} />
     </div>
   );
-};
-export default HomePage;
+}
