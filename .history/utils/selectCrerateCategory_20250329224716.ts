@@ -1,0 +1,15 @@
+export const selectCategories = [
+  { name: "DIGITAL ART" },
+  { name: "DRAWINGS" },
+  { name: "PHOTOGRAPHY" },
+  { name: "Realism" },
+  { name: "Semi-Abstract Art" },
+  { name: "Watercolor Painting" },
+  { name: "Oil Painting" },
+  { name: "Acrylic Painting" },
+  { name: "Religious Painting" },
+  { name: "Historical Painting" },
+  { name: "Landscape Painting" },
+  { name: "Genre Painting" },
+  { name: "Surrealism" },
+];
