@@ -1,7 +1,6 @@
 import { fetchGalleryById } from "@/actions/gallery";
-import FetchGalleryById from "@/components/galleryById/FetchGalleryById";
-import BuyNowButton from "@/components/galleryById/payment/BuyNowButton";
-import GalleryCarousel from "@/components/galleryById/slideshow/SlidesGalleries";
+import BuyNowButton from "@/components/payment/BuyNowButton";
+import GalleryCarousel from "@/components/slideshow/SlidesGalleries";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@clerk/nextjs/server";
 
@@ -21,12 +20,15 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
           {/* Info */}
           <div className="flex-1 w-full py-4">
             <div className=" h-full  flex flex-col  justify-between">
-              <FetchGalleryById
-                title={galleryId.title}
-                price={galleryId.price}
-                description={galleryId.description}
-                quantity={galleryId.quantity}
-              />
+              <div>
+                <h1 className="text-3xl font-bold">{galleryId.title}</h1>
+                <p className="mt-4 text-3xl text-blue-500 font-semibold">
+                  {galleryId.price}฿
+                </p>
+                <p className="mt-2 text-muted-foreground">
+                  {galleryId.description}
+                </p>
+              </div>
               <div></div>
 
               <BuyNowButton

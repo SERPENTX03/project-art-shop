@@ -1,22 +1,15 @@
-import { fetchAllGalleries, fetchGalleriesByCategory } from "@/actions/gallery";
+import { fetchAllGalleries } from "@/actions/gallery";
 import Image from "next/image";
-import Link from "next/link";
 
-type CardTrendingProps = {
-  category?: string;
-};
-
-const CardTrending = async ({ category }: CardTrendingProps) => {
-  const galleries =
-    category && category !== "ALL"
-      ? await fetchGalleriesByCategory(category)
-      : await fetchAllGalleries();
-
-  const isStockGallery = galleries?.filter((g) => g.quantity > 0);
-
+const CardBestSeller = async () => {
+  const galleries = await fetchAllGalleries();
+  const isBestSeller = galleries
+    .filter((b) => b.soldCount > 0)
+    .sort((a, b) => b.soldCount - a.soldCount)
+    .slice(0, 5);
   return (
     <>
-      {isStockGallery?.map((art, index) => (
+      {isBestSeller.map((art, index) => (
         <div className="h-80" key={index}>
           <Image
             className="w-full h-40 rounded-2xl"
@@ -38,7 +31,7 @@ const CardTrending = async ({ category }: CardTrendingProps) => {
                 className="button-custom py-1.5 px-3"
               >
                 View more
-              </Link>
+              </Link>{" "}
             </div>
           </div>
         </div>
@@ -46,4 +39,4 @@ const CardTrending = async ({ category }: CardTrendingProps) => {
     </>
   );
 };
-export default CardTrending;
+export default CardBestSeller;

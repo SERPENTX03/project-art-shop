@@ -1,16 +1,11 @@
 import { fetchAllGalleries } from "@/actions/gallery";
 import Image from "next/image";
-import Link from "next/link";
 
 const CardBestSeller = async () => {
   const galleries = await fetchAllGalleries();
-  const isBestSeller = galleries
-    .filter((b) => b.soldCount > 0)
-    .sort((a, b) => b.soldCount - a.soldCount)
-    .slice(0, 5);
   return (
     <>
-      {isBestSeller.map((art, index) => (
+      {galleries.slice(0, 4).map((art, index) => (
         <div className="h-80" key={index}>
           <Image
             className="w-full h-40 rounded-2xl"
@@ -27,12 +22,7 @@ const CardBestSeller = async () => {
               <p>{art.description}</p>
             </div>
             <div className="flex justify-center">
-              <Link
-                href={`/gallery/${art.id}`}
-                className="button-custom py-1.5 px-3"
-              >
-                View more
-              </Link>
+              <button className="button-custom py-1.5 px-3">View more</button>
             </div>
           </div>
         </div>

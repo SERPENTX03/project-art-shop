@@ -1,6 +1,5 @@
 import { fetchAllGalleries } from "@/actions/gallery";
 import Image from "next/image";
-import Link from "next/link";
 
 const CardBestSeller = async () => {
   const galleries = await fetchAllGalleries();
@@ -27,12 +26,7 @@ const CardBestSeller = async () => {
               <p>{art.description}</p>
             </div>
             <div className="flex justify-center">
-              <Link
-                href={`/gallery/${art.id}`}
-                className="button-custom py-1.5 px-3"
-              >
-                View more
-              </Link>
+              <button className="button-custom py-1.5 px-3">View more</button>
             </div>
           </div>
         </div>

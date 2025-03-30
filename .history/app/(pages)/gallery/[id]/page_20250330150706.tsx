@@ -25,7 +25,6 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
                 title={galleryId.title}
                 price={galleryId.price}
                 description={galleryId.description}
-                quantity={galleryId.quantity}
               />
               <div></div>
 

@@ -21,12 +21,7 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
           {/* Info */}
           <div className="flex-1 w-full py-4">
             <div className=" h-full  flex flex-col  justify-between">
-              <FetchGalleryById
-                title={galleryId.title}
-                price={galleryId.price}
-                description={galleryId.description}
-                quantity={galleryId.quantity}
-              />
+              <FetchGalleryById />
               <div></div>
 
               <BuyNowButton

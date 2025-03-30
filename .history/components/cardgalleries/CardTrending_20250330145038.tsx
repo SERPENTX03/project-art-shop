@@ -16,7 +16,7 @@ const CardTrending = async ({ category }: CardTrendingProps) => {
 
   return (
     <>
-      {isStockGallery?.map((art, index) => (
+      {isStockGallery?.slice(0, 4).map((art, index) => (
         <div className="h-80" key={index}>
           <Image
             className="w-full h-40 rounded-2xl"
