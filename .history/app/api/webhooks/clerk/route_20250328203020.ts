@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { clerkClient, WebhookEvent } from "@clerk/nextjs/server";
+import { WebhookEvent } from "@clerk/nextjs/server";
 import prisma from "@/config/db";
 import { NextResponse } from "next/server";
 
@@ -102,15 +102,6 @@ export async function POST(req: Request) {
           lastName: last_name || null,
           username: username || null,
           role: "USER",
-        },
-      });
-
-      const client = await clerkClient();
-
-      await client.users.updateUserMetadata(id, {
-        publicMetadata: {
-          role: "USER",
-          dbUserId: newUser.id,
         },
       });
 

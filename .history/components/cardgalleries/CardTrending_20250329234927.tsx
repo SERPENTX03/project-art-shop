@@ -7,6 +7,7 @@ type CardTrendingProps = {
 };
 
 const CardTrending = async ({ category }: CardTrendingProps) => {
+  console.log(category);
   const galleries =
     category && category !== "ALL"
       ? await fetchGalleriesByCategory(category)

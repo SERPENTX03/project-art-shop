@@ -33,7 +33,7 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
 
               <BuyNowButton
                 product={{
-                  id: galleryId.id,
+                  id: galleryId.id
                   title: galleryId.title,
                   description: galleryId.description || "",
                   price: galleryId.price,

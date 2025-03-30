@@ -8,7 +8,6 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { userId } = await auth();
   const { id } = await params;
   const galleryId = await fetchGalleryById(id);
-  console.log(galleryId);
   return (
     <section className="my-10">
       <Separator className="my-10" />
@@ -33,7 +32,6 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
 
               <BuyNowButton
                 product={{
-                  id: galleryId.id,
                   title: galleryId.title,
                   description: galleryId.description || "",
                   price: galleryId.price,

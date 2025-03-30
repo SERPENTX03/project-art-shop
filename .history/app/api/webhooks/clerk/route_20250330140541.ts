@@ -110,7 +110,8 @@ export async function POST(req: Request) {
       await client.users.updateUserMetadata(id, {
         publicMetadata: {
           role: "USER",
-          dbUserId: newUser.id,
+          createdInApp: true,
+          createdAt: new Date().toISOString(),
         },
       });
 

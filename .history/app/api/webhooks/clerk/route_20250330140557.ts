@@ -111,6 +111,8 @@ export async function POST(req: Request) {
         publicMetadata: {
           role: "USER",
           dbUserId: newUser.id,
+          createdInApp: true,
+          createdAt: new Date().toISOString(),
         },
       });
 
