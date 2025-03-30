@@ -3,7 +3,7 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "react-toastify";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
+const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY!);
 
 type Props = {
   product: {
@@ -17,8 +17,6 @@ type Props = {
 export default function BuyNowButton({ product }: Props) {
   const handleBuyNow = async () => {
     const stripe = await stripePromise;
-
-    console.log("Stripe filed toload", stripe);
 
     if (!stripe) {
       toast.error("Stripe failed to load. Check your bublic key.");

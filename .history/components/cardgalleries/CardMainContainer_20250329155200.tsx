@@ -8,8 +8,8 @@ type Props = {
   };
 };
 
-const CardMainContainer = async ({ searchParams = {} }: Props) => {
-  const category = (await searchParams.category) || "ALL";
+const CardMainContainer = ({ searchParams = {} }: Props) => {
+  const category = searchParams.category || "ALL";
   return (
     <>
       <FilterCategories selected={category} />

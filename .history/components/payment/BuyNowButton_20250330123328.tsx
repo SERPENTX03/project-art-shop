@@ -3,7 +3,9 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "react-toastify";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 type Props = {
   product: {
@@ -18,8 +20,6 @@ export default function BuyNowButton({ product }: Props) {
   const handleBuyNow = async () => {
     const stripe = await stripePromise;
 
-    console.log("Stripe filed toload", stripe);
-
     if (!stripe) {
       toast.error("Stripe failed to load. Check your bublic key.");
       return;
@@ -32,8 +32,6 @@ export default function BuyNowButton({ product }: Props) {
     });
 
     const data = await res.json();
-
-    console.log("🧾 API Response:", res.status, data);
 
     if (!res.ok || !data.sessionId) {
       toast.error("Failed to start checkout");
