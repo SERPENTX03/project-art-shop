@@ -1,6 +1,5 @@
 import Stripe from "stripe";
 import { notFound } from "next/navigation";
-import { ReceiptPDF } from "@/components/checkout/ReceiptPDF";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
@@ -20,14 +19,6 @@ const SuccessPage = async ({
   });
 
   const lineItems = session.line_items?.data ?? [];
-
-  const simpleSession = {
-    id: session.id,
-    customer_email: session.customer_email,
-    payment_status: session.payment_status,
-    amount_total: session.amount_total,
-    currency: session.currency,
-  };
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 border rounded-lg shadow-md">
@@ -67,10 +58,6 @@ const SuccessPage = async ({
         </ul>
       </div>
 
-      <div className="max-w-xl mx-auto mt-10">
-        <ReceiptPDF session={simpleSession} />
-      </div>
-
       <div className="mt-6 text-center">
         <a
           href="/account/orders"
@@ -82,4 +69,5 @@ const SuccessPage = async ({
     </div>
   );
 };
+
 export default SuccessPage;
