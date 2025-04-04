@@ -50,11 +50,9 @@ export async function POST(req: Request) {
   }
 
   // Do something with payload
-  // Do something with payload
   const eventType = evt.type;
-  console.log("📩 Webhook received. Event type:", eventType);
 
-  // ✅ ตรวจสอบก่อนว่าประเภท event คือ user.created
+  //  ตรวจสอบก่อนว่าประเภท event คือ user.created
   if (eventType === "user.created") {
     try {
       const {
@@ -67,16 +65,7 @@ export async function POST(req: Request) {
         primary_email_address_id,
       } = evt.data;
 
-      console.log("👤 Processing user.created event with data:");
-      console.log("➡️ id:", id);
-      console.log("➡️ email_addresses:", email_addresses);
-      console.log("➡️ primary_email_address_id:", primary_email_address_id);
-      console.log("➡️ first_name:", first_name);
-      console.log("➡️ last_name:", last_name);
-      console.log("➡️ username:", username);
-
       if (!id || !email_addresses || email_addresses.length === 0) {
-        console.error("❌ Missing id or email_addresses");
         throw new Error("Incomplete user data received");
       }
 
@@ -84,23 +73,17 @@ export async function POST(req: Request) {
         (email) => email.id === primary_email_address_id
       );
 
-      console.log("🔍 Found primaryEmailObj:", primaryEmailObj);
-
       const primaryEmail = primaryEmailObj?.email_address;
 
       if (!primaryEmail) {
-        console.error("❌ primaryEmail is undefined");
         throw new Error("No valid email address found");
       }
-
-      console.log("📧 Primary email resolved:", primaryEmail);
 
       const existingUser = await prisma.user.findUnique({
         where: { clerkId: id },
       });
 
       if (existingUser) {
-        console.log("✅ User already exists:", existingUser.id);
         return NextResponse.json(
           { message: "User already exists", userId: existingUser.id },
           { status: 200 }
@@ -119,8 +102,6 @@ export async function POST(req: Request) {
         },
       });
 
-      console.log("🎉 New user created with ID:", newUser.id);
-
       return NextResponse.json(
         {
           message: "User created successfully",
@@ -129,18 +110,16 @@ export async function POST(req: Request) {
         { status: 201 }
       );
     } catch (error) {
-      console.error("🔥 Error processing user.created event:");
-      console.error(error);
+      console.error(`Error processing user.created event:`, error);
       return NextResponse.json(
         {
           error: "Failed to process user creation",
           details: error instanceof Error ? error.message : "Unknown error",
         },
-        { status: 200 } // ✅ เพื่อไม่ให้ Clerk webhook failed
+        { status: 200 }
       );
     }
   }
 
-  console.log("ℹ️ Webhook event type not handled:", eventType);
   return new Response("Webhook received", { status: 200 });
 }
