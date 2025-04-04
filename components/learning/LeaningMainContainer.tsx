@@ -22,10 +22,9 @@ const LeaningMainContainer = () => {
             <div className={`flex ${l.widthImage}`}>
               <Image
                 priority
-                className={``}
+                className={`object-cover`}
                 src={l.img}
                 alt={`learning-${index}`}
-                objectFit="cover"
                 width={400}
                 height={400}
               />

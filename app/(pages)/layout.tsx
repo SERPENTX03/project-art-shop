@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Suspense } from "react";
@@ -26,6 +27,7 @@ export default function MainLayout({
             <Navbar />
             {children}
           </main>
+          <Footer />
         </NuqsAdapter>
       </Suspense>
     </>

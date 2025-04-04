@@ -1,6 +1,6 @@
 import { fetchAllGalleries } from "@/actions/gallery";
 import Image from "next/image";
-import Link from "next/link";
+import ViewMoreButton from "./PendingButton";
 
 const CardBestSeller = async () => {
   const galleries = await fetchAllGalleries();
@@ -13,8 +13,7 @@ const CardBestSeller = async () => {
       {isBestSeller.map((art, index) => (
         <div className="h-80" key={index}>
           <Image
-            className="w-full h-40 rounded-lg"
-            objectFit="cover"
+            className="w-full h-40 rounded-lg object-cover"
             src={art.images[0]}
             alt={art.title}
             width={200}
@@ -24,16 +23,17 @@ const CardBestSeller = async () => {
           <div className="flex flex-col h-34 justify-between">
             <div className="text-center">
               <h1 className="mt-2">{art.title}</h1>
-              <p>{art.description}</p>
+              <div className=" flex flex-col justify-center items-center ">
+                <div className="w-full max-w-[200px]">
+                  <p className="text-sm text-muted-foreground break-words">
+                    {art.description?.slice(0, 50)}
+                  </p>{" "}
+                </div>
+              </div>
             </div>
             <div className="flex justify-between px-2">
               <p className="text-right text-xl text-[#123458]">{art.price} ฿</p>{" "}
-              <Link
-                href={`/gallery/${art.id}`}
-                className="button-custom py-1.5 px-3"
-              >
-                View more
-              </Link>
+              <ViewMoreButton id={art.id} />
             </div>
           </div>
         </div>

@@ -31,23 +31,21 @@ const CommuMainContainer = () => {
       <div className="relative flex justify-center mt-4 w-full mx-auto">
         {/* Wallpaper 1 */}
         <Image
-          className="w-[60%] "
+          className="w-[60%] object-cover"
           src={wallpapper1}
           alt="bg-1"
           width={500}
           height={500}
-          objectFit="cover"
         />
 
         {/* Wallpaper 2 (ขยับขึ้นมาทับ Wallpaper 1) */}
         <div className="absolute top-[40%] w-full flex justify-center">
           <Image
-            className="w-[80%] h-[400px]"
+            className="w-[80%] h-[400px] object-cover"
             src={wallpapper2}
             alt="bg-2"
             width={500}
             height={500}
-            objectFit="cover"
           />
         </div>
       </div>

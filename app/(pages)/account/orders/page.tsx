@@ -1,5 +1,5 @@
 import { fetchOrderById } from "@/actions/order";
-import OrderListClient from "@/components/orderuser/OrderListClient";
+import OrderMain from "@/components/orderuser/OrderMain";
 import { auth } from "@clerk/nextjs/server";
 
 const OrderByAccout = async () => {
@@ -8,6 +8,6 @@ const OrderByAccout = async () => {
     throw new Error("User ID is null. Unable to fetch order.");
   }
   const orderUser = await fetchOrderById(userId);
-  return <OrderListClient orders={orderUser} />;
+  return <OrderMain orders={orderUser} />;
 };
 export default OrderByAccout;

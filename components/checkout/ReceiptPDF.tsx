@@ -2,13 +2,15 @@
 
 import { useRef } from "react";
 import html2pdf from "html2pdf.js";
-import Stripe from "stripe";
-
-type ReceiptProps = {
-  session: Stripe.Checkout.Session;
+type ReceiptSession = {
+  id: string;
+  customer_email: string | null;
+  payment_status: string;
+  amount_total: number | null;
+  currency: string | null;
 };
 
-export function ReceiptPDF({ session }: ReceiptProps) {
+export function ReceiptPDF({ session }: { session: ReceiptSession }) {
   const receiptRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = () => {
@@ -17,14 +19,22 @@ export function ReceiptPDF({ session }: ReceiptProps) {
 
     const options = {
       filename: `receipt-${session.id}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 3 },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     };
-
-    html2pdf().from(element).set(options).save();
+    html2pdf()
+      .from(element)
+      .set(options)
+      .save()
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          console.error("PDF download error:", err.message);
+        } else {
+          console.error("Unknown error occurred during PDF download:", err);
+        }
+      });
   };
-
   return (
     <div>
       <div ref={receiptRef} className="bg-white p-6 rounded-lg shadow">

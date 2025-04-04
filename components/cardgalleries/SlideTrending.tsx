@@ -2,9 +2,9 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import ViewMoreButton from "./PendingButton";
 
 type Gallery = {
   id: string;
@@ -91,12 +91,7 @@ const SlideTrending = ({ galleries }: Props) => {
                     <p className="text-right text-xl text-[#123458]">
                       {art.price} ฿
                     </p>
-                    <Link
-                      href={`/gallery/${art.id}`}
-                      className="button-custom py-1 px-3 mt-2 text-sm"
-                    >
-                      View more
-                    </Link>
+                    <ViewMoreButton id={art.id} />
                   </div>
                 </div>
               </div>

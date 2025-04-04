@@ -1,17 +1,15 @@
-"use client";
+type Props = {
+  pending: boolean;
+};
 
-import { useFormStatus } from "react-dom";
-
-export default function SubmitButton() {
-  const { pending } = useFormStatus();
-
+export default function SubmitButton({ pending }: Props) {
   return (
     <button
-      disabled={pending}
       type="submit"
-      className="button-custom w-full py-3"
+      disabled={pending}
+      className="button-custom w-full py-3 mt-4 disabled:opacity-60"
     >
-      {pending ? "...Creating Gallery" : "Create Gallery"}
+      {pending ? "Creating..." : "Create Gallery"}
     </button>
   );
 }

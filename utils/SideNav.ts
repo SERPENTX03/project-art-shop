@@ -23,3 +23,10 @@ export const items = [
     icon: Home,
   },
 ];
+export const adminNav = [
+  {
+    title: "Dashbord",
+    url: "/admin/galleries",
+    icon: Home,
+  },
+];

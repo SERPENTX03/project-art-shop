@@ -21,6 +21,14 @@ const SuccessPage = async ({
 
   const lineItems = session.line_items?.data ?? [];
 
+  const simpleSession = {
+    id: session.id,
+    customer_email: session.customer_email,
+    payment_status: session.payment_status,
+    amount_total: session.amount_total,
+    currency: session.currency,
+  };
+
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 border rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">🎉 Payment Successful!</h1>
@@ -60,7 +68,7 @@ const SuccessPage = async ({
       </div>
 
       <div className="max-w-xl mx-auto mt-10">
-        <ReceiptPDF session={session} />
+        <ReceiptPDF session={simpleSession} />
       </div>
 
       <div className="mt-6 text-center">
