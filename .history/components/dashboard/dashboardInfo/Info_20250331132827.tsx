@@ -1,8 +1,4 @@
-"use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 
 type InfoDashboardProps = {
   shop?: {
@@ -14,26 +10,6 @@ type InfoDashboardProps = {
 };
 
 const InfoDashboard = ({ shop, totalGallery }: InfoDashboardProps) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    const fetchShopId = async () => {
-      try {
-        const res = await fetch("/api/shop");
-        if (!res.ok) {
-          router.push("/createshop");
-        }
-      } catch (error) {
-        toast.error(
-          `Failed to load shop info: ${
-            error instanceof Error ? error.message : String(error)
-          }`
-        );
-      }
-    };
-
-    fetchShopId();
-  }, [router]);
   return (
     <>
       {/* Shop Info */}

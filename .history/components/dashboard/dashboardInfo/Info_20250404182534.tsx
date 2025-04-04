@@ -1,4 +1,3 @@
-"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -14,26 +13,32 @@ type InfoDashboardProps = {
 };
 
 const InfoDashboard = ({ shop, totalGallery }: InfoDashboardProps) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    const fetchShopId = async () => {
-      try {
-        const res = await fetch("/api/shop");
-        if (!res.ok) {
-          router.push("/createshop");
+  const router = useRouter()
+  const 
+   useEffect(() => {
+      const fetchShopId = async () => {
+        try {
+          const res = await fetch("/api/shop");
+          if(!res.ok) {
+            toast.error("Filed to load shop info")
+          }
+          if (res.ok) {
+          } else if (res.status === 404) {
+            router.push("/createshop");
+          } else {
+            toast.error("Unexpected error");
+          }
+        } catch (error) {
+          toast.error(
+            `Failed to load shop info: ${
+              error instanceof Error ? error.message : String(error)
+            }`
+          );
         }
-      } catch (error) {
-        toast.error(
-          `Failed to load shop info: ${
-            error instanceof Error ? error.message : String(error)
-          }`
-        );
-      }
-    };
-
-    fetchShopId();
-  }, [router]);
+      };
+  
+      fetchShopId();
+    }, [router]);
   return (
     <>
       {/* Shop Info */}

@@ -21,7 +21,13 @@ const InfoDashboard = ({ shop, totalGallery }: InfoDashboardProps) => {
       try {
         const res = await fetch("/api/shop");
         if (!res.ok) {
+          toast.error("Filed to load shop info");
+        }
+        if (res.ok) {
+        } else if (res.status === 404) {
           router.push("/createshop");
+        } else {
+          toast.error("Unexpected error");
         }
       } catch (error) {
         toast.error(
