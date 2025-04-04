@@ -30,7 +30,7 @@ export function ReceiptPDF({ session }: { session: ReceiptSession }) {
       .set(opt)
       .from(element)
       .save()
-      .catch((err: unknown) => {
+      .catch((err) => {
         console.error("Download failed", err);
       });
   };

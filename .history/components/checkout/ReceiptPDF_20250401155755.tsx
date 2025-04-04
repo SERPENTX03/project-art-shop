@@ -17,24 +17,24 @@ export function ReceiptPDF({ session }: { session: ReceiptSession }) {
     const element = receiptRef.current;
     if (!element) return;
 
-    window.scrollTo(0, 0); // ensure visibility
-    const opt = {
-      margin: 0,
+    const options = {
       filename: `receipt-${session.id}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 3 },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     };
-
     html2pdf()
-      .set(opt)
       .from(element)
+      .set(options)
       .save()
       .catch((err: unknown) => {
-        console.error("Download failed", err);
+        if (err instanceof Error) {
+          console.error("PDF download error:", err.message);
+        } else {
+          console.error("Unknown error occurred during PDF download:", err);
+        }
       });
   };
-
   return (
     <div>
       <div ref={receiptRef} className="bg-white p-6 rounded-lg shadow">

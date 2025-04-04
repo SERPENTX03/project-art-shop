@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { notFound } from "next/navigation";
-import ReceiptPDFWrapper from "@/components/checkout/ReceiptPDFWrapper";
+import { ReceiptPDF } from "@/components/checkout/ReceiptPDF";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
@@ -68,7 +68,7 @@ const SuccessPage = async ({
       </div>
 
       <div className="max-w-xl mx-auto mt-10">
-        <ReceiptPDFWrapper session={simpleSession} />
+        <ReceiptPDF session={simpleSession} />
       </div>
 
       <div className="mt-6 text-center">
