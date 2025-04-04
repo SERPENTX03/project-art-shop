@@ -65,10 +65,12 @@ export async function POST(req: Request) {
         primary_email_address_id,
       } = evt.data;
 
+      // ✅ ตรวจสอบข้อมูลที่จำเป็น
       if (!id || !email_addresses || email_addresses.length === 0) {
         throw new Error("Incomplete user data received");
       }
 
+      // ✅ หา primary email จาก email_addresses
       const primaryEmailObj = email_addresses.find(
         (email) => email.id === primary_email_address_id
       );
@@ -79,6 +81,7 @@ export async function POST(req: Request) {
         throw new Error("No valid email address found");
       }
 
+      // ✅ ตรวจสอบว่าผู้ใช้มีอยู่แล้วหรือไม่
       const existingUser = await prisma.user.findUnique({
         where: { clerkId: id },
       });
@@ -90,6 +93,7 @@ export async function POST(req: Request) {
         );
       }
 
+      // ✅ สร้างผู้ใช้ใหม่
       const newUser = await prisma.user.create({
         data: {
           clerkId: id,
@@ -116,10 +120,11 @@ export async function POST(req: Request) {
           error: "Failed to process user creation",
           details: error instanceof Error ? error.message : "Unknown error",
         },
-        { status: 200 }
+        { status: 200 } // ✅ return 200 เพื่อไม่ให้ webhook fail
       );
     }
   }
 
+  // ✅ ถ้าไม่ใช่ event ที่เราสนใจ ก็ return 200
   return new Response("Webhook received", { status: 200 });
 }
