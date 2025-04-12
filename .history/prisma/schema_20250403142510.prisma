@@ -24,11 +24,6 @@ enum PaymentStatus {
   FAILED
 }
 
-enum PaymentProvider {
-  STRIPE
-  OMISE
-}
-
 model User {
   id           String       @id @default(auto()) @map("_id") @db.ObjectId
   clerkId      String       @unique
@@ -98,7 +93,6 @@ model Order {
   total     Float
   status    PaymentStatus @default(PENDING)
   stripeId  String? // payment intent ID
-  omiseId   String? // omise charge ID
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   items     OrderItem[]

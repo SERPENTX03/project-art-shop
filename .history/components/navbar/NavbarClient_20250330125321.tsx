@@ -1,32 +1,11 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { NavLink } from "@/utils/Navlink";
-import { useEffect, useState } from "react";
 
 const NavbarClient = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [, setRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchRole = async () => {
-      try {
-        const res = await fetch("/api/checkadmin");
-        const data = await res.json();
-        setRole(data.role);
-
-        if (data.role === "ADMIN") {
-          router.push("/admin/galleries");
-        }
-      } catch (error) {
-        console.error("Failed to fetch role", error);
-      }
-    };
-
-    fetchRole();
-  }, [router]);
 
   return (
     <>

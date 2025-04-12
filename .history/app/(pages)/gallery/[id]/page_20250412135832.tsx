@@ -2,7 +2,6 @@ import { fetchGalleryById } from "@/actions/gallery";
 import BreadcrumComponent from "@/components/galleryById/Breadcrumb";
 import FetchGalleryById from "@/components/galleryById/FetchGalleryById";
 import BuyNowButton from "@/components/galleryById/payment/BuyNowButton";
-import OmiseQrDialog from "@/components/galleryById/payment/OmiseQr";
 import GalleryCarousel from "@/components/galleryById/slideshow/SlidesGalleries";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@clerk/nextjs/server";
@@ -30,24 +29,20 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
                 quantity={galleryId.quantity}
               />
               <div></div>
-              <div className="flex gap-2">
-                {/* Omise */}
-                <OmiseQrDialog
-                  amount={galleryId.price}
-                  description={galleryId.title}
-                  userId={userId || ""}
-                  galleryId={galleryId.id}
-                />
-                <BuyNowButton
-                  product={{
-                    id: galleryId.id,
-                    title: galleryId.title,
-                    description: galleryId.description || "",
-                    price: galleryId.price,
-                    clerkId: userId,
-                  }}
-                />
+
+              {/* Omise */}
+              <div>
+                <div></div>
               </div>
+              <BuyNowButton
+                product={{
+                  id: galleryId.id,
+                  title: galleryId.title,
+                  description: galleryId.description || "",
+                  price: galleryId.price,
+                  clerkId: userId,
+                }}
+              />
             </div>
           </div>
         </div>

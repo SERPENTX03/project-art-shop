@@ -34,9 +34,7 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
                 {/* Omise */}
                 <OmiseQrDialog
                   amount={galleryId.price}
-                  description={galleryId.title}
-                  userId={userId || ""}
-                  galleryId={galleryId.id}
+                  description={`ชำระเงินสำหรับ: ${galleryId.title}`}
                 />
                 <BuyNowButton
                   product={{

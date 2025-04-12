@@ -30,13 +30,11 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
                 quantity={galleryId.quantity}
               />
               <div></div>
-              <div className="flex gap-2">
+              <div className="flex">
                 {/* Omise */}
                 <OmiseQrDialog
                   amount={galleryId.price}
-                  description={galleryId.title}
-                  userId={userId || ""}
-                  galleryId={galleryId.id}
+                  description={`ชำระเงินสำหรับ: ${galleryId.title}`}
                 />
                 <BuyNowButton
                   product={{

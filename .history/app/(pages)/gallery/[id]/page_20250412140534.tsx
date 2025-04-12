@@ -30,24 +30,18 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
                 quantity={galleryId.quantity}
               />
               <div></div>
-              <div className="flex gap-2">
-                {/* Omise */}
-                <OmiseQrDialog
-                  amount={galleryId.price}
-                  description={galleryId.title}
-                  userId={userId || ""}
-                  galleryId={galleryId.id}
-                />
-                <BuyNowButton
-                  product={{
-                    id: galleryId.id,
-                    title: galleryId.title,
-                    description: galleryId.description || "",
-                    price: galleryId.price,
-                    clerkId: userId,
-                  }}
-                />
-              </div>
+
+              {/* Omise */}
+              <OmiseQrDialog />
+              <BuyNowButton
+                product={{
+                  id: galleryId.id,
+                  title: galleryId.title,
+                  description: galleryId.description || "",
+                  price: galleryId.price,
+                  clerkId: userId,
+                }}
+              />
             </div>
           </div>
         </div>

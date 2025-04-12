@@ -13,7 +13,7 @@ export const items = [
   },
   {
     title: "Order",
-    url: "/dashboard/orders",
+    url: "dashboard/orders",
     icon: ClockArrowUp,
   },
 

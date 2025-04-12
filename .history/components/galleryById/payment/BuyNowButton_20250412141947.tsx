@@ -47,8 +47,8 @@ export default function BuyNowButton({ product }: Props) {
   };
 
   return (
-    <button onClick={handleBuyNow} className="button-custom h-[50px] w-full">
-      Cradit card
+    <button onClick={handleBuyNow} className="button-custom h-[50px] w-[50%]">
+      Buy Now
     </button>
   );
 }

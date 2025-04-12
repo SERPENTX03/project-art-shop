@@ -1,4 +1,4 @@
-import { CirclePlus, Home, ClockArrowUp } from "lucide-react";
+import { CirclePlus, Home, ClockArrowUp, Search, Settings } from "lucide-react";
 
 export const items = [
   {
@@ -13,7 +13,7 @@ export const items = [
   },
   {
     title: "Order",
-    url: "/dashboard/orders",
+    url: "dashboard/orders",
     icon: ClockArrowUp,
   },
 
