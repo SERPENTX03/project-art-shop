@@ -6,7 +6,7 @@ export async function GET() {
   const { userId } = await auth();
 
   if (!userId) {
-    return NextResponse.json({ role: null });
+    return NextResponse.json({ role: null }, { status: 200 });
   }
 
   const user = await prisma.user.findUnique({
@@ -14,5 +14,5 @@ export async function GET() {
     select: { role: true },
   });
 
-  return NextResponse.json({ role: user?.role ?? null });
+  return NextResponse.json({ role: user?.role ?? null }, { status: 200 });
 }

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     //  สร้าง Order ใน Prisma
-    await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         user: { connect: { clerkId: userId } },
         total: gallery.price,
@@ -65,17 +65,12 @@ export async function POST(req: Request) {
         },
       },
     });
-    await prisma.gallery.update({
-      where: { id: galleryId },
-      data: {
-        quantity: { decrement: 1 },
-        soldCount: { increment: 1 },
-      },
-    });
 
     return NextResponse.json({
       qr: qrUrl,
       chargeId: chargeId,
+      orderId: order.id,
+      redirectUrl: `/checkout/processing?orderId=${order.id}`,
     });
   } catch (err) {
     console.error("Omise error:", err);

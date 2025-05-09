@@ -59,34 +59,88 @@ export default function CreateShopForm() {
   return (
     <form
       action={formAction}
-      className="max-w-xl mt-16 mx-auto p-6 bg-white shadow-xl rounded-xl space-y-6"
+      className="max-w-xl mt-16 mx-auto p-6 bg-white shadow-xl rounded-xl space-y-6 border"
     >
-      <h2 className="text-2xl font-bold text-center">Create Your Shop</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-800">
+        🏪 Create Your Shop
+      </h2>
       <Separator />
 
-      {/* Shop Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">Shop Name</Label>
-        <Input
-          id="name"
-          placeholder="Enter your shop name"
-          {...register("name")}
-          required
-        />
+      {/* Shop Info */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Shop Name</Label>
+          <Input
+            id="name"
+            placeholder="Enter your shop name"
+            {...register("name")}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone Number</Label>
+          <Input
+            id="phone"
+            placeholder="08XXXXXXXX"
+            type="tel"
+            {...register("phone")}
+            required
+          />
+        </div>
       </div>
 
-      {/* Phone Number */}
-      <div className="space-y-2">
-        <Label htmlFor="phone">Phone Number</Label>
-        <Input
-          id="phone"
-          placeholder="08XXXXXXXX"
-          type="number"
-          {...register("phone")}
-          required
-        />
+      {/* Bank Info */}
+      <div className="pt-4 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-700">
+          🏦 Bank Information
+        </h3>
+
+        <div className="space-y-2">
+          <Label htmlFor="bankName">Bank Name</Label>
+          <Input
+            id="bankName"
+            placeholder="เช่น SCB / KBank"
+            {...register("bankName")}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="accountName">Account Name</Label>
+          <Input
+            id="accountName"
+            placeholder="ชื่อบัญชี (ภาษาไทย)"
+            {...register("accountName")}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="accountNumber">Account Number</Label>
+          <Input
+            id="accountNumber"
+            placeholder="เลขบัญชี"
+            type="text"
+            {...register("accountNumber")}
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="promptpayId">PromptPay (optional)</Label>
+          <Input
+            id="promptpayId"
+            placeholder="เบอร์โทรศัพท์ หรือเลขบัตรประชาชน"
+            type="text"
+            {...register("promptpayId")}
+          />
+        </div>
       </div>
 
+      <Separator />
+
+      {/* Submit */}
       <button
         type="submit"
         disabled={isPending}

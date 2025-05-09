@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,9 @@ export default function OmiseQrDialog({
   const [qrUrl, setQrUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [orderStatus, setOrderStatus] = useState("PENDING");
+  const [open, setOpen] = useState(false);
 
   const fetchQR = async () => {
     if (!userId || !galleryId) {
@@ -50,6 +53,7 @@ export default function OmiseQrDialog({
 
       const data = await res.json();
       setQrUrl(data.qr);
+      setOrderId(data.orderId);
     } catch (err: unknown) {
       console.error("Error loading QR:", err);
       setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
@@ -58,12 +62,44 @@ export default function OmiseQrDialog({
     }
   };
 
+  useEffect(() => {
+    if (!orderId || orderStatus === "PAID") return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/order/status?orderId=${orderId}`);
+        const data = await res.json();
+
+        if (data.status === "PAID") {
+          setOrderStatus("PAID");
+          clearInterval(interval);
+        }
+      } catch (err) {
+        console.error("Failed to fetch order status:", err);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [orderId, orderStatus]);
+
+  // ✅ เมื่อ modal ถูกปิด และ order = PAID ให้ refresh หน้า
+  const handleDialogChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+
+    if (!isOpen && orderStatus === "PAID") {
+      window.location.reload();
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <button
           className="button-custom h-[50px] px-2 w-full"
-          onClick={fetchQR}
+          onClick={() => {
+            fetchQR();
+            setOpen(true);
+          }}
         >
           QR PromptPay
         </button>
@@ -74,7 +110,11 @@ export default function OmiseQrDialog({
           <DialogTitle>QR พร้อมเพย์</DialogTitle>
         </DialogHeader>
 
-        {loading ? (
+        {orderStatus === "PAID" ? (
+          <p className="text-center text-green-600 font-bold">
+            ✅ ชำระเงินสำเร็จ
+          </p>
+        ) : loading ? (
           <p className="text-center">⏳ กำลังโหลด QR...</p>
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>

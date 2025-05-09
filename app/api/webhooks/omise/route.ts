@@ -2,9 +2,15 @@ import prisma from "@/config/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  console.log("Webhook POST received");
+
   const body = await req.json();
 
-  if (body.object === "event" && body.key === "charge.complete") {
+  if (
+    body.object === "event" &&
+    body.key === "charge.complete" &&
+    body.data?.object === "charge"
+  ) {
     const charge = body.data;
 
     if (charge.status === "successful") {
@@ -16,7 +22,7 @@ export async function POST(req: NextRequest) {
         include: { items: true },
       });
 
-      if (order) {
+      if (order && order.items.length > 0) {
         const galleryId = order.items[0].galleryId;
 
         // อัปเดตสถานะ Order

@@ -9,7 +9,7 @@ export default async function AdminDashBoard({
 }) {
   await requireAdmin();
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen ">
       <SidebarProvider>
         <AppSidebar />
         {/* Main content */}

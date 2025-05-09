@@ -14,7 +14,7 @@ interface BreadcrumbProps {
 const BreadcrumComponent = ({ title }: BreadcrumbProps) => {
   return (
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="text-lg">
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>

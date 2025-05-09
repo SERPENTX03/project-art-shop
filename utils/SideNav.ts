@@ -18,7 +18,7 @@ export const items = [
   },
 
   {
-    title: "Home",
+    title: "Back to Home",
     url: "/",
     icon: Home,
   },
@@ -28,5 +28,10 @@ export const adminNav = [
     title: "Dashbord",
     url: "/admin/galleries",
     icon: Home,
+  },
+  {
+    title: "Payout",
+    url: "/admin/payout",
+    icon: ClockArrowUp,
   },
 ];

@@ -9,6 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { adminNav } from "@/utils/SideNav";
+import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 export function AppSidebar() {
@@ -29,6 +30,11 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SignOutButton>
+                <button className="text-center w-full h-full font-bold py-2 hover:bg-slate-400 cursor-pointer rounded-2xl transition-colors duration-300 ease-in-out">
+                  Logout
+                </button>
+              </SignOutButton>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
