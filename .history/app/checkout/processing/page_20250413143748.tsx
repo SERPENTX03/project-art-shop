@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-// เนื้อหาหลักของหน้า
-const ProcessingContent = () => {
+const ProcessingPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -13,16 +12,12 @@ const ProcessingContent = () => {
     if (!orderId) return;
 
     const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/order/status?orderId=${orderId}`);
-        const data = await res.json();
+      const res = await fetch(`/api/order/status?orderId=${orderId}`);
+      const data = await res.json();
 
-        if (data.status === "PAID") {
-          clearInterval(interval);
-          router.push(`/checkout/success?session_id=${data.sessionId}`);
-        }
-      } catch (error) {
-        console.error("Error checking payment status:", error);
+      if (data.status === "PAID") {
+        clearInterval(interval);
+        router.push(`/checkout/success?session_id=${data.sessionId}`);
       }
     }, 4000);
 
@@ -36,15 +31,6 @@ const ProcessingContent = () => {
         หากคุณชำระเงินสำเร็จ ระบบจะพาไปยังหน้าสำเร็จโดยอัตโนมัติ
       </p>
     </div>
-  );
-};
-
-// หน้าหลักที่ใช้ Suspense
-const ProcessingPage = () => {
-  return (
-    <Suspense fallback={<div>กำลังโหลด...</div>}>
-      <ProcessingContent />
-    </Suspense>
   );
 };
 
