@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/actions/chackadmin";
+import { requireAdmin } from "@/actions/checkadmin";
 import { AppSidebar } from "@/components/sidebar/admin";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 

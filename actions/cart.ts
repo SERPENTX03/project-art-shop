@@ -59,7 +59,7 @@ export async function addtoCart(galleryId: string, quantity: number) {
 
 export const getCartItemCount = async () => {
   const user = await currentUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user) return null;
 
   const userId = user.id;
   if (!userId) return 0;

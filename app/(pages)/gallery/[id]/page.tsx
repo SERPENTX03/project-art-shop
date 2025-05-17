@@ -10,10 +10,10 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const gallery = await fetchGalleryById(id);
   return (
-    <section className="mt-5">
+    <section className="mt-6">
       <BreadcrumComponent title={gallery.title} />
       <Separator className="my-3 " />
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 mt-14">
         <div className="flex flex-col md:flex-row gap-10">
           {/* Carousel */}
           <GalleryCarousel images={gallery.images} />
@@ -36,6 +36,8 @@ const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
       </div>
+      {/* ดัน Footer เผื่อ Content ในอนาคต */}
+      <div className="mb-40"></div>
     </section>
   );
 };

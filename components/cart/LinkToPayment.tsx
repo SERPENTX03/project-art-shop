@@ -1,16 +1,23 @@
+import { CartItem } from "@/types/cart";
 import Link from "next/link";
 
 type LinkToPaymentProps = {
   selected: Set<string>;
   total: number;
   quantityTotal: number;
+  items: CartItem[];
 };
 
 const LinkToPayment = ({
   selected,
   total,
   quantityTotal,
+  items,
 }: LinkToPaymentProps) => {
+  const handleClick = () => {
+    const selectedItems = items.filter((item) => selected.has(item.id));
+    localStorage.setItem("selectedCartItems", JSON.stringify(selectedItems));
+  };
   return (
     <>
       {selected.size > 0 && (
@@ -20,6 +27,7 @@ const LinkToPayment = ({
           <Link
             href={`/cart/checkout`}
             className="text-lg px-4 py-2 button-custom"
+            onClick={handleClick}
           >
             สั่งสินค้า{" "}
           </Link>

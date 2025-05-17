@@ -1,109 +1,161 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { getDateRange, RANGE_OPTIONS, RangeOption } from "@/utils/GetDateRange";
 import { useMemo, useState } from "react";
+import { format } from "date-fns";
+import { Payout } from "@prisma/client";
 import { ShopProps } from "@/types/shop";
-import DialogShopBank from "./DialogShopBank";
+import SettingShopBank from "./SettingShopBank";
 
-interface Payout {
-  amount: number;
-  createdAt: string;
-}
+type OrderWithItems = {
+  items: {
+    paidToShop: boolean;
+  }[];
+};
 
 interface Props {
-  payout: Payout[];
+  payouts: Payout[];
   shop: ShopProps | null;
+  orders: OrderWithItems[];
 }
 
-function getFirstDayOfMonth(): string {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1)
-    .toISOString()
-    .split("T")[0];
-}
+export default function PayoutSummary({ payouts, shop, orders }: Props) {
+  const [selectedRange, setSelectedRange] = useState<RangeOption>("All time");
+  const [customOpen, setCustomOpen] = useState(false);
+  const [customFrom, setCustomFrom] = useState<Date | null>(null);
+  const [customTo, setCustomTo] = useState<Date | null>(null);
 
-function getToday(): string {
-  return new Date().toISOString().split("T")[0];
-}
+  const { from, to } = useMemo(() => {
+    if (selectedRange === "Custom" && customFrom && customTo) {
+      return getDateRange(selectedRange) ?? { from: undefined, to: undefined };
+    }
+    return getDateRange(selectedRange) || {};
+  }, [selectedRange, customFrom, customTo]);
 
-export default function PayoutSummary({ payout, shop }: Props) {
-  console.log(shop);
+  const filteredPayouts = useMemo(() => {
+    return payouts.filter((p) => {
+      const created = new Date(p.createdAt);
+      if (from && created < from) return false;
+      if (to && created > to) return false;
+      return true;
+    });
+  }, [payouts, from, to]);
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const unpaidCount = useMemo(() => {
+    return orders.flatMap((o) => o.items).filter((item) => !item.paidToShop)
+      .length;
+  }, [orders]);
 
-  const [fromDate, setFromDate] = useState(
-    searchParams.get("from") || getFirstDayOfMonth()
-  );
-  const [toDate, setToDate] = useState(searchParams.get("to") || getToday());
-
-  const handleFilter = () => {
-    const params = new URLSearchParams();
-    if (fromDate) params.set("from", fromDate);
-    if (toDate) params.set("to", toDate);
-    router.replace(`?${params.toString()}`);
-  };
-
-  const total = useMemo(() => {
-    const from = fromDate ? new Date(fromDate) : null;
-    const to = toDate
-      ? new Date(new Date(toDate).setHours(23, 59, 59, 999))
-      : null;
-    return payout
-      .filter((p) => {
-        const created = new Date(p.createdAt);
-        return (!from || created >= from) && (!to || created <= to);
-      })
-      .reduce((sum, p) => sum + p.amount, 0);
-  }, [payout, fromDate, toDate]);
+  const total = filteredPayouts.reduce((sum, p) => sum + p.amount, 0);
 
   return (
-    <div className="space-y-6 mt-10">
+    <div className="space-y-4 mt-10">
       <div className="flex justify-between items-center flex-wrap gap-4">
-        <h2 className="text-2xl font-bold tracking-tight">
-          💸 สรุปยอดการโอนเงินที่ได้
-        </h2>
-
-        <DialogShopBank shop={shop} />
+        <h2 className="text-2xl font-bold tracking-tight">💸 Payout Summary</h2>
+        <SettingShopBank shop={shop} />
       </div>
 
-      <div className="bg-muted p-4 rounded-xl shadow-sm space-y-4">
-        <div className="flex items-center justify-between  gap-4">
-          <div className="flex gap-2">
-            <div className="flex flex-col gap-2">
-              <Label>จากวันที่</Label>
-              <Input
-                className="w-fit"
+      {/* Select + Date Range Label */}
+      <div className="flex items-center gap-4">
+        <select
+          value={selectedRange}
+          onChange={(e) => {
+            const value = e.target.value as RangeOption;
+            setSelectedRange(value);
+            if (value === "Custom") setCustomOpen(true);
+          }}
+          className="border p-2 rounded"
+        >
+          {RANGE_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+
+        {selectedRange === "Custom" && from && to && (
+          <p className="text-sm text-muted-foreground">
+            📅 {format(from, "yyyy-MM-dd")} to {format(to, "yyyy-MM-dd")}
+          </p>
+        )}
+      </div>
+
+      {/* Modal Date Picker */}
+      <Dialog open={customOpen} onOpenChange={setCustomOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Select Custom Date Range</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm">From Date</label>
+              <input
                 type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                className="border p-2 rounded w-full"
+                value={customFrom ? format(customFrom, "yyyy-MM-dd") : ""}
+                onChange={(e) => setCustomFrom(new Date(e.target.value))}
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label>ถึงวันที่</Label>
-              <Input
-                className="w-fit"
+            <div>
+              <label className="text-sm">To Date</label>
+              <input
                 type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+                className="border p-2 rounded w-full"
+                value={customTo ? format(customTo, "yyyy-MM-dd") : ""}
+                onChange={(e) => setCustomTo(new Date(e.target.value))}
               />
             </div>
           </div>
-          <Button onClick={handleFilter} className="w-fit px-10 cursor-pointer">
-            🔍 ค้นหา
-          </Button>
+          <DialogFooter className="mt-4 flex justify-end gap-2">
+            <button
+              className="px-4 py-2 bg-gray-200 rounded"
+              onClick={() => {
+                setCustomOpen(false);
+                setSelectedRange("All time");
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+              disabled={!customFrom || !customTo}
+              onClick={() => {
+                setCustomOpen(false);
+                setSelectedRange("Custom");
+              }}
+            >
+              Apply
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Summary Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border border-primary/50 py-4 rounded-2xl">
+        <div className="p-4">
+          <p className="text-lg text-muted-foreground">Total Payout</p>
+          <h2 className="text-2xl font-bold ">{total.toLocaleString()}฿</h2>
+        </div>
+
+        <div className="border-l border-primary/50 p-4">
+          <p className="text-lg text-muted-foreground">Unpaid Items</p>
+          <h2 className="text-2xl font-bold ">{unpaidCount}</h2>
+        </div>
+
+        <div className="border-l border-primary/50 p-4">
+          <p className="text-lg text-muted-foreground">Paid Orders</p>
+          <h2 className="text-2xl font-bold ">
+            {filteredPayouts.filter((p) => p.orderId !== null).length}
+          </h2>
         </div>
       </div>
-
-      <Card>
-        <CardContent className="p-6 text-center text-xl font-semibold text-green-600">
-          ✅ ยอดรวมทั้งหมด: {total.toLocaleString()} บาท
-        </CardContent>
-      </Card>
     </div>
   );
 }

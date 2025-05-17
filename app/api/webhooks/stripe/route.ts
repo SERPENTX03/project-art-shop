@@ -34,47 +34,66 @@ export async function POST(req: NextRequest) {
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata;
 
-    const galleryId = metadata?.galleryId;
-    const clerkId = metadata?.clerkId;
+    const userId = metadata?.userId;
+    const cartItemIds = metadata?.cartItemIds;
 
-    if (!galleryId || !clerkId) {
+    if (!userId || !cartItemIds) {
       return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
     }
 
+    const itemIds = cartItemIds.split(",");
+
     try {
-      const gallery = await prisma.gallery.findUnique({
-        where: { id: galleryId },
+      const cartItems = await prisma.cartItem.findMany({
+        where: { id: { in: itemIds } },
+        include: { gallery: true },
       });
 
-      if (!gallery || gallery.quantity < 1) {
+      if (!cartItems.length) {
         return NextResponse.json(
-          { error: "Gallery not available" },
+          { error: "No valid cart items" },
           { status: 400 }
         );
       }
 
       await prisma.order.create({
         data: {
-          user: { connect: { clerkId } },
-          total: gallery.price,
+          user: { connect: { clerkId: userId } },
+          total: cartItems.reduce(
+            (sum, item) => sum + item.gallery.price * item.quantity,
+            0
+          ),
           status: "PAID",
           stripeId: session.payment_intent as string,
+          shippingFullName: metadata.shippingFullName,
+          shippingPhone: metadata.shippingPhone,
+          shippingAddressLine: metadata.shippingAddressLine,
+          shippingSubDistrict: metadata.shippingSubDistrict,
+          shippingDistrict: metadata.shippingDistrict,
+          shippingProvince: metadata.shippingProvince,
+          shippingPostalCode: metadata.shippingPostalCode,
           items: {
-            create: {
-              gallery: { connect: { id: galleryId } },
-              quantity: 1,
-              unitPrice: gallery.price,
-            },
+            create: cartItems.map((item) => ({
+              gallery: { connect: { id: item.galleryId } },
+              quantity: item.quantity,
+              unitPrice: item.gallery.price,
+            })),
           },
         },
       });
 
-      await prisma.gallery.update({
-        where: { id: galleryId },
-        data: {
-          quantity: { decrement: 1 },
-          soldCount: { increment: 1 },
-        },
+      for (const item of cartItems) {
+        await prisma.gallery.update({
+          where: { id: item.galleryId },
+          data: {
+            quantity: { decrement: item.quantity },
+            soldCount: { increment: item.quantity },
+          },
+        });
+      }
+
+      await prisma.cartItem.deleteMany({
+        where: { id: { in: itemIds } },
       });
 
       return NextResponse.json({ success: true });

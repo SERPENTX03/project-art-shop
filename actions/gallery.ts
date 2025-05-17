@@ -5,6 +5,7 @@ import prisma from "@/config/db";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import cloudinary from "@/lib/cloudinary";
+import { Gallery } from "@/types/gallery";
 
 // Schema validatation for zod
 
@@ -19,7 +20,7 @@ const createGallerySchema = z.object({
 export type FormState = {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: Gallery;
 };
 
 export async function createGallery(

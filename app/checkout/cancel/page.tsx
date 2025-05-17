@@ -10,7 +10,7 @@ export default function CancelPage() {
         <p className="text-muted-foreground">
           You have canceled the checkout process. No charge was made.
         </p>
-        <Link href="/">
+        <Link href="/cart/checkout">
           <button className="button-custom py-2 px-4">Continue Shopping</button>
         </Link>
       </div>

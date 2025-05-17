@@ -1,24 +1,26 @@
-import prisma from "@/config/db";
+import Omise from "omise";
 import { NextRequest, NextResponse } from "next/server";
+
+const omise = Omise({
+  publicKey: process.env.OMISE_PUBLIC_KEY!,
+  secretKey: process.env.OMISE_SECRET_KEY!,
+});
 
 export async function GET(req: NextRequest) {
   const orderId = req.nextUrl.searchParams.get("orderId");
 
   if (!orderId) {
+    return NextResponse.json({ error: "Missing orderId" }, { status: 400 });
+  }
+
+  try {
+    const charge = await omise.charges.retrieve(orderId);
+    return NextResponse.json({ status: charge.status });
+  } catch (err) {
+    console.error("Fetch order status error:", err);
     return NextResponse.json(
-      { error: "Order ID is required" },
-      { status: 400 }
+      { error: "Unable to retrieve order status" },
+      { status: 500 }
     );
   }
-
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    select: { status: true },
-  });
-
-  if (!order) {
-    return NextResponse.json({ error: "Order not found" }, { status: 404 });
-  }
-
-  return NextResponse.json({ status: order.status });
 }

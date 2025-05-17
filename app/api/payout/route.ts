@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { shopId, amount, galleryIds, note } = await req.json();
-    // console.log("Body received:", req);
 
     if (
       !shopId ||

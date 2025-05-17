@@ -2,8 +2,6 @@ import prisma from "@/config/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  console.log("Webhook POST received");
-
   const body = await req.json();
 
   if (
@@ -12,6 +10,21 @@ export async function POST(req: NextRequest) {
     body.data?.object === "charge"
   ) {
     const charge = body.data;
+    console.log("Webhook Charge ID:", charge.id);
+
+    const order = await prisma.order.findFirst({
+      where: {
+        omiseId: charge.id,
+        status: "PENDING",
+      },
+      include: { items: true },
+    });
+
+    if (!order) {
+      console.log("❌ ไม่พบ order ที่ omiseId =", charge.id);
+    } else {
+      console.log("✅ พบ order แล้ว:", order.id);
+    }
 
     if (charge.status === "successful") {
       const order = await prisma.order.findFirst({
@@ -19,26 +32,50 @@ export async function POST(req: NextRequest) {
           omiseId: charge.id,
           status: "PENDING",
         },
-        include: { items: true },
+        include: {
+          items: {
+            select: {
+              galleryId: true,
+              quantity: true,
+            },
+          },
+        },
       });
 
-      if (order && order.items.length > 0) {
-        const galleryId = order.items[0].galleryId;
+      if (order) {
+        const {
+          shippingFullName,
+          shippingPhone,
+          shippingAddressLine,
+          shippingSubDistrict,
+          shippingDistrict,
+          shippingProvince,
+          shippingPostalCode,
+        } = charge.metadata || {};
 
-        // อัปเดตสถานะ Order
         await prisma.order.update({
           where: { id: order.id },
-          data: { status: "PAID" },
-        });
-
-        // อัปเดตสินค้า
-        await prisma.gallery.update({
-          where: { id: galleryId },
           data: {
-            quantity: { decrement: 1 },
-            soldCount: { increment: 1 },
+            status: "PAID",
+            shippingFullName,
+            shippingPhone,
+            shippingAddressLine,
+            shippingSubDistrict,
+            shippingDistrict,
+            shippingProvince,
+            shippingPostalCode,
           },
         });
+
+        for (const item of order.items) {
+          await prisma.gallery.update({
+            where: { id: item.galleryId },
+            data: {
+              quantity: { decrement: item.quantity },
+              soldCount: { increment: item.quantity },
+            },
+          });
+        }
       }
     }
   }

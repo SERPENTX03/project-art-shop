@@ -1,4 +1,4 @@
-import { requireAdminAPI } from "@/actions/chackadmin";
+import { requireAdminAPI } from "@/actions/checkadmin";
 import prisma from "@/config/db";
 import { NextRequest, NextResponse } from "next/server";
 

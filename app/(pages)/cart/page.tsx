@@ -39,19 +39,18 @@ const Cart = () => {
 
   return (
     <div className="m-8 pb-32 max-h-[calc(100vh-150px)] overflow-auto">
-      <div className="bg-white rounded shadow">
-        <CartTable
-          selected={selected}
-          setSelected={setSelected}
-          items={items}
-          setItems={setItems}
-        />
-      </div>
+      <CartTable
+        selected={selected}
+        setSelected={setSelected}
+        items={items}
+        setItems={setItems}
+      />
 
       <LinkToPayment
         quantityTotal={quantityTotal}
         total={total}
         selected={selected}
+        items={items}
       />
     </div>
   );

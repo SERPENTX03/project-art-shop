@@ -1,0 +1,15 @@
+import { fetchOrderByUser } from "@/actions/order";
+import OrderMain from "@/components/orderuser/OrderMain";
+import { auth } from "@clerk/nextjs/server";
+
+const OrderByAccout = async () => {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("User ID is null. Unable to fetch order.");
+  }
+
+  const orders = await fetchOrderByUser(userId);
+  console.log(orders);
+  return <OrderMain orders={orders} />;
+};
+export default OrderByAccout;
