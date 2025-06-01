@@ -6,18 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "../ui/VisuallyHidden";
+
+import ImageCarouselDialog from "./ImagePreviewDialog";
+import { Gallery } from "@prisma/client";
 
 interface Props {
-  gallery: {
-    id: string;
-    title: string;
-    price: number;
-    images: string[];
-    status: "PENDING" | "APPROVED" | "REJECTED";
-    rejectReasons?: string[];
-  };
+  gallery: Gallery;
   updateStatus: (
     id: string,
     status: "APPROVED" | "REJECTED",
@@ -131,20 +125,11 @@ export default function GalleryCard({ gallery, updateStatus }: Props) {
       </Card>
       {/* Modal img */}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-full p-0">
-          <VisuallyHidden>
-            <DialogTitle>ดูรูปภาพ</DialogTitle>
-          </VisuallyHidden>
-          <Image
-            src={gallery.images[0]}
-            alt={gallery.title}
-            width={1200}
-            height={800}
-            className="w-full h-auto object-contain rounded"
-          />
-        </DialogContent>
-      </Dialog>
+      <ImageCarouselDialog
+        images={gallery.imageAdmin}
+        open={open}
+        onOpenChange={setOpen}
+      />
     </>
   );
 }

@@ -60,8 +60,8 @@ const AddBacket = ({ gallery }: AddBacketProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="cursor-pointer absolute top-2 right-2 border p-1 rounded-2xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out ">
-          <SlBasket size={30} className="" />
+        <div className="cursor-pointer border p-1 rounded-2xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out">
+          <SlBasket size={30} />
         </div>
       </DialogTrigger>
       <DialogContent>
@@ -93,6 +93,7 @@ const AddBacket = ({ gallery }: AddBacketProps) => {
           จำนวนที่เหลือหลังเพิ่มตะกร้า: {Math.max(0, remainingQuantity)} ชิ้น
         </div>
         <div className="mt-4 text-lg">ยอดรวม: {total} ฿</div>
+
         <button
           onClick={handleAddToCart}
           disabled={loading || quantity > maxQuantity}

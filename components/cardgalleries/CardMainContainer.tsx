@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import CardBestSeller from "./CardBestSeller";
 import CardTrending from "./CardTrending";
 import FilterCategories from "./FilterCategories";
@@ -9,9 +10,10 @@ type Props = {
   };
 };
 
-const CardMainContainer = ({ searchParams = {} }: Props) => {
+const CardMainContainer = async ({ searchParams = {} }: Props) => {
   const category = searchParams.category || "ALL";
   const search = searchParams.search || "";
+  const { userId } = await auth();
 
   return (
     <>
@@ -19,7 +21,7 @@ const CardMainContainer = ({ searchParams = {} }: Props) => {
 
       <h1 className="text-2xl font-semibold mb-4">TRENDING</h1>
       <section className="w-full">
-        <CardTrending category={category} search={search} />
+        <CardTrending userId={userId} category={category} search={search} />
       </section>
 
       <h1 className="text-2xl font-semibold mb-4 mt-24">BEST SELLER</h1>

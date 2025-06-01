@@ -7,12 +7,18 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import ViewMoreButton from "./PendingButton";
 import AddBacket from "./AddBacket";
 import { Gallery } from "@/types/gallery";
+import { SlBasket } from "react-icons/sl";
+import { GrFavorite } from "react-icons/gr";
+
+import { SignUpButton } from "@clerk/nextjs";
+import ToggleFavorite from "./ToggleFavorite";
 
 type Props = {
   galleries: Gallery[];
+  userId: string | null;
 };
 
-const SlideTrending = ({ galleries }: Props) => {
+const SlideTrending = ({ galleries, userId }: Props) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: false,
@@ -68,7 +74,34 @@ const SlideTrending = ({ galleries }: Props) => {
                   height={200}
                   className="w-full h-40  object-cover rounded-lg"
                 />
-                <AddBacket gallery={art} />
+                {userId ? (
+                  <>
+                    <div className="absolute top-2 right-2">
+                      <div className="flex gap-2">
+                        <AddBacket gallery={art} />
+                        <ToggleFavorite galleryId={art.id} />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="absolute top-2 right-2  ">
+                    <div className="flex gap-2">
+                      <SignUpButton mode="modal">
+                        <SlBasket
+                          size={35}
+                          className="border cursor-pointer p-1 rounded-xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out"
+                        />
+                      </SignUpButton>
+                      <SignUpButton mode="modal">
+                        <GrFavorite
+                          size={35}
+                          className=" border cursor-pointer p-1 rounded-xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out"
+                        />
+                      </SignUpButton>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex flex-col h-34 justify-between">
                   <div className="text-center">
                     <h1 className="mt-2 font-semibold text-sm md:text-base">

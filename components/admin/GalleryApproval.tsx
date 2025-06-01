@@ -4,15 +4,7 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Pagination from "./Pagination";
 import GalleryCard from "./GalleryCard";
-
-interface Gallery {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  status: "PENDING" | "APPROVED" | "REJECTED";
-  rejectReasons?: string[];
-}
+import { Gallery } from "@prisma/client";
 
 export default function GalleryApprovalPage() {
   const [galleries, setGalleries] = useState<Gallery[]>([]);
@@ -82,7 +74,7 @@ export default function GalleryApprovalPage() {
         </TabsList>
 
         <TabsContent value={currentTab}>
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid  md:grid-cols-2 xl:grid-cols-3 gap-4">
             {paginated.map((gallery) => (
               <GalleryCard
                 key={gallery.id}

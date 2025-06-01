@@ -4,7 +4,7 @@ export interface OrderItemWithRelation extends OrderItem {
   gallery: {
     title: string;
     images: string[];
-    shop?: {
+    artist?: {
       phone?: string | null;
     } | null;
   };

@@ -1,3 +1,5 @@
+"use client";
+
 import { OrderItemWithRelation } from "@/types/order";
 import TimelineStatus from "./TimelineStatus";
 
@@ -17,12 +19,23 @@ const ShippingTab = ({ items }: ShippingTabProps) => {
   return (
     <div className="space-y-6">
       {shippingItems.map((item) => (
-        <TimelineStatus
+        <div
           key={item.id}
-          current={item.deliveryStatus}
-          galleryTitle={item.gallery.title}
-          imageUrl={item.gallery.images[0]}
-        />
+          className="border p-4 rounded-xl space-y-3 bg-white shadow-sm"
+        >
+          <TimelineStatus
+            current={item.deliveryStatus}
+            galleryTitle={item.gallery.title}
+            imageUrl={item.gallery.images[0]}
+          />
+
+          {item.trackingNumber && (
+            <div className="text-sm">
+              <span className="font-medium">Tracking Number:</span>{" "}
+              <span className="text-blue-600">{item.trackingNumber}</span>
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );

@@ -3,6 +3,7 @@ import { SignedOutProfile, SignInBtn } from "./Auth";
 import NavbarClient from "./NavbarClient";
 import Search from "./Search";
 import BasketOrder from "./BasketOrder";
+import FavoliteCount from "./FavoliteCount";
 
 const Navbar = async () => {
   return (
@@ -18,7 +19,9 @@ const Navbar = async () => {
       {/* NavLink */}
       <ul className="flex items-center space-x-10">
         <NavbarClient />
+        <FavoliteCount />
         <BasketOrder />
+
         <SignInBtn />
         <div className="border h-full w-[80px] rounded-full flex justify-center items-center text-2xl">
           <span className="mr-1">EN</span>

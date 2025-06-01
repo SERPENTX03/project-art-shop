@@ -4,9 +4,14 @@ import SlideTrending from "./SlideTrending";
 type CardTrendingProps = {
   category?: string;
   search?: string;
+  userId: string | null;
 };
 
-const CardTrending = async ({ category, search }: CardTrendingProps) => {
+const CardTrending = async ({
+  category,
+  search,
+  userId,
+}: CardTrendingProps) => {
   const galleries =
     category && category !== "ALL"
       ? await fetchGalleriesByCategory(category)
@@ -23,6 +28,6 @@ const CardTrending = async ({ category, search }: CardTrendingProps) => {
     );
   }
 
-  return <SlideTrending galleries={filtered || []} />;
+  return <SlideTrending userId={userId} galleries={filtered || []} />;
 };
 export default CardTrending;

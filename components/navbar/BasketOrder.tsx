@@ -13,7 +13,7 @@ const BasketOrder = () => {
   useEffect(() => {
     const fetchCount = async () => {
       const total = await getCartItemCount();
-      setCount(total);
+      setCount(total ?? 0);
     };
     fetchCount();
   }, [setCount]);

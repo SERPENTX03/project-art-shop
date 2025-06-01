@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.5.2",
+    "emoji-picker-react": "^4.12.2",
     "fullstack-shop-art": "file:",
     "lucide-react": "^0.484.0",
     "mongodb": "^6.15.0",

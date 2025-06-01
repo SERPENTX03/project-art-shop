@@ -16,6 +16,13 @@ import { updateDeliveryStatus } from "@/actions/order-management";
 import { useTransition, useState } from "react";
 import { toast } from "react-toastify";
 import { CustomerAddressDialog } from "./AddressDialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   orders: (OrderItem & { gallery: Gallery; order: Order })[];
@@ -27,6 +34,9 @@ export function OrderTable({ orders }: Props) {
   const [, startTransition] = useTransition();
   const [filter, setFilter] = useState<FilterStatus>("ALL");
 
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  const [tracking, setTracking] = useState<Record<string, string>>({});
+
   const isValidFilter = (value: string): value is FilterStatus => {
     return ["ALL", "PENDING", "SHIPPED", "DELIVERED"].includes(value);
   };
@@ -36,10 +46,15 @@ export function OrderTable({ orders }: Props) {
       ? orders
       : orders.filter((o) => o.deliveryStatus === filter);
 
-  const handleStatusChange = (id: string, next: "SHIPPED" | "DELIVERED") => {
+  const handleStatusChange = (
+    id: string,
+    next: "SHIPPED" | "DELIVERED",
+    trackingNumber?: string
+  ) => {
     startTransition(async () => {
       try {
-        await updateDeliveryStatus(id, next);
+        await updateDeliveryStatus(id, next, trackingNumber);
+        toast.success("อัปเดตสถานะสำเร็จ");
         window.location.reload();
       } catch (err) {
         console.error(err);
@@ -89,7 +104,6 @@ export function OrderTable({ orders }: Props) {
             <TableHead>สถานะจัดส่ง</TableHead>
             <TableHead>สั่งเมื่อ</TableHead>
             <TableHead>ที่อยู่ลูกค้า</TableHead>
-
             <TableHead>ดำเนินการ</TableHead>
           </TableRow>
         </TableHeader>
@@ -107,14 +121,48 @@ export function OrderTable({ orders }: Props) {
               <TableCell>
                 <CustomerAddressDialog order={item.order} />
               </TableCell>
-
               <TableCell>
                 {item.deliveryStatus === "PENDING" && (
-                  <Button
-                    onClick={() => handleStatusChange(item.id, "SHIPPED")}
+                  <Dialog
+                    open={openDialogId === item.id}
+                    onOpenChange={(open) =>
+                      setOpenDialogId(open ? item.id : null)
+                    }
                   >
-                    จัดส่งแล้ว
-                  </Button>
+                    <DialogTrigger asChild>
+                      <Button>จัดส่งแล้ว</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogTitle>กรอกเลขพัสดุ</DialogTitle>
+                      <div className="space-y-2 mt-4">
+                        <Input
+                          placeholder="Tracking Number"
+                          value={tracking[item.id] || ""}
+                          onChange={(e) =>
+                            setTracking((prev) => ({
+                              ...prev,
+                              [item.id]: e.target.value,
+                            }))
+                          }
+                        />
+                        <Button
+                          onClick={() => {
+                            if (!tracking[item.id]) {
+                              toast.warning("กรุณากรอกเลขพัสดุ");
+                              return;
+                            }
+                            handleStatusChange(
+                              item.id,
+                              "SHIPPED",
+                              tracking[item.id]
+                            );
+                          }}
+                        >
+                          ยืนยันจัดส่ง
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 )}
                 {item.deliveryStatus === "SHIPPED" && (
                   <Button

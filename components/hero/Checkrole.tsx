@@ -7,7 +7,7 @@ const Checkrole = ({ role }: { role: string | undefined }) => {
 
   useEffect(() => {
     if (role) {
-      router.push(role === "ADMIN" ? "/admin" : "/");
+      router.push(role === "ADMIN" ? "/admin/galleries" : "/");
     }
   }, [router, role]);
 

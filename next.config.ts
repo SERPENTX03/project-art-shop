@@ -20,11 +20,14 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "10mb",
+      bodySizeLimit: "20mb",
     },
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  compiler: {
+    reactRemoveProperties: true,
   },
 };
 

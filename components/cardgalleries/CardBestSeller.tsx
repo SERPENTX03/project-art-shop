@@ -2,9 +2,15 @@ import { fetchAllGalleries } from "@/actions/gallery";
 import Image from "next/image";
 import ViewMoreButton from "./PendingButton";
 import AddBacket from "./AddBacket";
+import { auth } from "@clerk/nextjs/server";
+import { SignUpButton } from "@clerk/nextjs";
+import { SlBasket } from "react-icons/sl";
+import ToggleFavorite from "./ToggleFavorite";
+import { GrFavorite } from "react-icons/gr";
 
 const CardBestSeller = async () => {
   const galleries = await fetchAllGalleries();
+  const { userId } = await auth();
   const isBestSeller = galleries
     .filter((b) => b.soldCount > 0)
     .sort((a, b) => b.soldCount - a.soldCount)
@@ -21,7 +27,33 @@ const CardBestSeller = async () => {
             height={200}
             priority
           />
-          <AddBacket gallery={art} />
+          {userId ? (
+            <>
+              <div className="absolute top-2 right-2">
+                <div className="flex gap-2">
+                  <AddBacket gallery={art} />
+                  <ToggleFavorite galleryId={art.id} />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="absolute top-2 right-2  ">
+              <div className="flex gap-2">
+                <SignUpButton mode="modal">
+                  <SlBasket
+                    size={35}
+                    className="border cursor-pointer p-1 rounded-xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out"
+                  />
+                </SignUpButton>
+                <SignUpButton mode="modal">
+                  <GrFavorite
+                    size={35}
+                    className=" border cursor-pointer p-1 rounded-xl bg-white/40 hover:bg-white/80 transition-colors duration-300 ease-in-out"
+                  />
+                </SignUpButton>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col h-34 justify-between">
             <div className="text-center">
               <h1 className="mt-2">{art.title}</h1>
