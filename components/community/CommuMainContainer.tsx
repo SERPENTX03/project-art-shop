@@ -66,7 +66,7 @@ const CommuMainContainer = ({ artist }: ArtistProps) => {
               {/* avatar ซ้าย */}
               <Image
                 className="w-[20%] h-full absolute top-0 left-0 object-cover"
-                src={a.avatar || "/default-avatar.png"}
+                src={a.avatar || "/images/default-avatar.png"}
                 alt={a.name}
                 height={200}
                 width={200}
@@ -86,7 +86,7 @@ const CommuMainContainer = ({ artist }: ArtistProps) => {
               {/* avatar ขวา (ซ้ำหรือ placeholder ได้) */}
               <Image
                 className="w-[20%] h-full absolute top-0 right-0 object-cover opacity-40"
-                src={a.avatar || "/default-avatar.png"}
+                src={a.avatar || "/images/default-avatar.png"}
                 alt={a.name}
                 height={200}
                 width={200}

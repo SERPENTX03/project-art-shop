@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAddressStore } from "@/store/addressStore";
 import { toast } from "react-toastify";
@@ -33,12 +32,6 @@ export default function OmisePaymentButton({ items, total }: Props) {
   const fetchQR = async () => {
     setLoading(true);
     setError("");
-
-    if (!address) {
-      toast.warn("กรุณาเลือกที่อยู่ก่อนชำระเงิน");
-      setLoading(false);
-      return;
-    }
 
     try {
       const res = await fetch("/api/payment/omise", {
@@ -119,18 +112,22 @@ export default function OmisePaymentButton({ items, total }: Props) {
   }, [orderStatus, router]);
 
   return (
-    <Dialog open={open}>
-      <DialogTrigger asChild>
-        <button
-          className="button-custom h-[50px] px-2 w-full"
-          onClick={() => {
-            fetchQR();
-            setOpen(true);
-          }}
-        >
-          ชำระด้วย QR พร้อมเพย์
-        </button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      {/* ลบ DialogTrigger ออก */}
+      <button
+        className="button-custom h-[50px] px-2 w-full"
+        onClick={() => {
+          if (!address) {
+            toast.warn("กรุณาเลือกที่อยู่ก่อนชำระเงิน");
+            return;
+          }
+
+          setOpen(true);
+          fetchQR();
+        }}
+      >
+        ชำระด้วย QR พร้อมเพย์
+      </button>
 
       <DialogContent className="max-w-sm">
         <DialogHeader>

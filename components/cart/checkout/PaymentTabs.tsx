@@ -14,8 +14,8 @@ export default function PaymentTabs({ items, total }: Props) {
   return (
     <Tabs defaultValue="stripe" className="w-full mt-8">
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="stripe">Credit Card (Stripe)</TabsTrigger>
-        <TabsTrigger value="omise">QR PromptPay (Omise)</TabsTrigger>
+        <TabsTrigger value="stripe">Credit Card </TabsTrigger>
+        <TabsTrigger value="omise">QR PromptPay </TabsTrigger>
       </TabsList>
 
       <TabsContent value="stripe">

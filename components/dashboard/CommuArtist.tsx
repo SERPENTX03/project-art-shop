@@ -7,7 +7,7 @@ const CommuArtist = () => {
       href={"/community/artist"}
       className="flex gap-1 border border-primary/50 w-fit p-2 "
     >
-      <p>CommuChat</p>
+      <p>CommuPost</p>
       <MessageCircle />
     </Link>
   );

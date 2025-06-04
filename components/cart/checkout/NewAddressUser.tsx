@@ -24,18 +24,21 @@ interface Props {
   initialData?: Address;
   isEditMode?: boolean;
   children?: React.ReactNode;
+  onSuccess?: () => void;
 }
 
 export default function NewAddressDialog({
   initialData,
   isEditMode,
   children,
+  onSuccess,
 }: Props) {
   const [, startTransition] = useTransition();
   const methods = useForm<Address>({
     defaultValues: initialData || {},
   });
   const [step, setStep] = useState("province");
+  const [open, setOpen] = useState(false);
 
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(
     provinces.find((p) => p.name_th === initialData?.province) || null
@@ -74,6 +77,9 @@ export default function NewAddressDialog({
               ? "อัปเดตที่อยู่เรียบร้อยแล้ว"
               : "เพิ่มที่อยู่เรียบร้อยแล้ว"
           );
+          onSuccess?.();
+          setOpen(false);
+
           methods.reset();
         } else {
           toast.error(res.error || "เกิดข้อผิดพลาด");
@@ -86,7 +92,7 @@ export default function NewAddressDialog({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children || (
           <Button>{isEditMode ? "แก้ไขที่อยู่" : "เพิ่มที่อยู่ใหม่"}</Button>

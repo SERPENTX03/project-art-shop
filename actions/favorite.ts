@@ -29,22 +29,7 @@ export const toggleFavorite = async (galleryId: string) => {
   return { message: "ถูกใจแล้ว ❤️", isFavorite: true };
 };
 
-export const isFavorited = async (galleryId: string) => {
-  const user = await currentUser();
-  if (!user) return false;
-
-  const favorite = await prisma.favorite.findFirst({
-    where: {
-      userId: user.id,
-      galleryId,
-    },
-  });
-
-  return !!favorite;
-};
-
 // Count Favorite for a Gallery
-
 export const getMyFavoriteCount = async () => {
   const user = await currentUser();
   if (!user) return 0;

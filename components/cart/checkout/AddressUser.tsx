@@ -1,11 +1,15 @@
-"use client";
-
+import { useAddressStore } from "@/store/addressStore";
+import { useRouter } from "next/navigation";
 import NewAddressDialog from "./NewAddressUser";
 import AddressCard from "./AddressCard";
-import { useAddressStore } from "@/store/addressStore";
 
 export default function AddressUser() {
   const { address, loading } = useAddressStore();
+  const router = useRouter();
+
+  const handleSuccess = () => {
+    router.refresh(); // หรือจะ refetch address store ก็ได้
+  };
 
   return (
     <div className="bg-white p-4 rounded shadow-md">
@@ -15,7 +19,7 @@ export default function AddressUser() {
       ) : address ? (
         <AddressCard address={address} />
       ) : (
-        <NewAddressDialog />
+        <NewAddressDialog onSuccess={handleSuccess} />
       )}
     </div>
   );

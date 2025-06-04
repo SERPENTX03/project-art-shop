@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { toggleFavorite, isFavorited } from "@/actions/favorite";
+import { toggleFavorite } from "@/actions/favorite";
 import { GrFavorite } from "react-icons/gr";
 import { FaHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -12,9 +12,17 @@ const ToggleFavorite = ({ galleryId }: { galleryId: string }) => {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    isFavorited(galleryId)
-      .then(setIsFavorite)
-      .catch((err) => console.error("Load favorite error", err));
+    const fetchFavoriteStatus = async () => {
+      try {
+        const res = await fetch(`/api/favorite?galleryId=${galleryId}`);
+        const data = await res.json();
+        setIsFavorite(data.isFavorite);
+      } catch (err) {
+        console.error("Failed to load favorite status:", err);
+      }
+    };
+
+    fetchFavoriteStatus();
   }, [galleryId]);
 
   const handleFavorite = async () => {
