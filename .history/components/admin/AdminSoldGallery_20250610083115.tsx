@@ -12,8 +12,6 @@ import {
 } from "../ui/dialog";
 import PayoutList from "./PayoutList";
 import { OrderItem } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 
 interface GalleryItem {
   id: string;
@@ -39,7 +37,6 @@ interface Props {
 export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
   const [page, setPage] = useState(1);
   const [loadingIds, setLoadingIds] = useState<string[]>([]);
-  const router = useRouter();
 
   // 🔁 กรองเฉพาะ gallery ที่มี orderItem ยังไม่จ่าย
   const unpaidGalleries = galleries.filter((g) =>
@@ -89,8 +86,7 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
 
       const data = await res.json();
       if (data.success) {
-        toast("ยืนยันการโอนสำเร็จ");
-        router.refresh();
+        window.location.reload();
       } else {
         alert(data.error || "เกิดข้อผิดพลาดในการยืนยัน");
       }

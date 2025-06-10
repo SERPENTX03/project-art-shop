@@ -53,6 +53,9 @@ export async function POST(req: NextRequest) {
         gallery: {
           connect: { id: galleryIds[0] },
         },
+        order: {
+          connect: { id: undeliveredItems[0]?.orderId }, // optional
+        },
       },
     });
 
