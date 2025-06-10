@@ -47,7 +47,7 @@ export default function PostFeed({ posts, avatar }: PostProps) {
               {/* Avatar มุมขวาบน */}
               <div className="absolute top-2 left-full w-10 h-10">
                 <Image
-                  src={avatar || "/images/default-avatar.png"}
+                  src={avatar || "/default-avatar.png"}
                   alt="Artist Avatar"
                   fill
                   className="rounded-full object-cover ml-1"

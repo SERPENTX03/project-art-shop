@@ -22,7 +22,7 @@ const CommunityArtistPage = async () => {
       <nav className="flex relative justify-between mt-10 border border-slate-500 h-20 rounded-full px-6">
         <div className="absolute left-0 top-0 h-full w-20 z-10">
           <Image
-            src={artist?.avatar || "/images/default-avatar.png"}
+            src={artist?.avatar || "/default-avatar.png"}
             alt="AvatarArtist"
             fill
             className="rounded-full object-cover"
