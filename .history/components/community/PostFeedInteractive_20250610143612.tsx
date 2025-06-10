@@ -114,7 +114,7 @@ export default function PostFeedInteractive({
                 <div className="relative border rounded-lg p-4 bg-primary/60 shadow-sm space-y-4">
                   {isQuestion ? (
                     <div className="flex justify-center">
-                      <div className="absolute top-0 -translate-y-1/2 w-16 h-16 mb-2">
+                      <div className="relative w-16 h-16 mb-2">
                         <Image
                           src={avatar || "/images/default-avatar.png"}
                           alt="Artist Avatar"

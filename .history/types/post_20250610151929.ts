@@ -3,7 +3,6 @@ export type Post = {
   content: string | null;
   images: string[];
   Reaction: { emoji: string }[];
-  createdAt: Date;
   PollQuestion?: {
     id: string;
     question: string;

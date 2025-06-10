@@ -1,9 +1,11 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { IoIosArrowUp } from "react-icons/io";
 import { getPostsByArtist } from "@/actions/post";
 import { togglePollVote } from "@/actions/poll";
 import type { Post } from "@/types/post";
+import { useRouter } from "next/navigation";
 
 export default function BottomBar({
   artistId,
@@ -15,21 +17,22 @@ export default function BottomBar({
   const [isOpen, setIsOpen] = useState(false);
   const [latestPoll, setLatestPoll] = useState<Post | null>(null);
   const [voted, setVoted] = useState<Record<string, string>>({});
+  const router = useRouter();
 
-  //  โหลดโพสต์ล่าสุดเริ่มต้น
   useEffect(() => {
-    const fetchLatest = async () => {
+    const fetchLatestPoll = async () => {
       const posts = await getPostsByArtist(artistId);
 
-      // ❗ เอาโพสต์ล่าสุดที่มี Poll จริง ๆ
-      const latestPost = posts
-        .filter((post) => post.PollQuestion?.length > 0)
-        .reverse()[0]; // หรือ .slice(-1)[0]
-
-      if (!latestPost) return;
+      // กรองเฉพาะโพสต์ที่มี poll และ user ยังไม่เคยโหวต
+      const unvotedPoll = posts.find((post) =>
+        post.PollQuestion?.some((q) =>
+          q.options.every((opt) => opt.votes.every((v) => v.userId !== userId))
+        )
+      );
 
       const voteStatus: Record<string, string> = {};
-      latestPost?.PollQuestion?.forEach((q) => {
+
+      unvotedPoll?.PollQuestion?.forEach((q) => {
         q.options.forEach((opt) => {
           if (opt.votes.some((v) => v.userId === userId)) {
             voteStatus[q.id] = "voted";
@@ -37,46 +40,35 @@ export default function BottomBar({
         });
       });
 
-      setLatestPoll(latestPost);
       setVoted(voteStatus);
+      setLatestPoll(unvotedPoll || null);
     };
 
-    fetchLatest();
+    fetchLatestPoll();
   }, [artistId, userId]);
 
   const handleVote = async (optionId: string, questionId: string) => {
     await togglePollVote(optionId);
 
-    location.reload();
+    const posts = await getPostsByArtist(artistId);
+
+    if (posts) {
+      router.refresh();
+    }
+
+    // หลังโหวตแล้วให้โหลดโพสต์ที่ยังไม่ได้โหวตเท่านั้น
+    const unvotedPoll = posts.find((post) =>
+      post.PollQuestion?.some((q) =>
+        q.options.every((opt) => opt.votes.every((v) => v.userId !== userId))
+      )
+    );
+
+    setLatestPoll(unvotedPoll || null);
+
     setVoted((prev) => ({
       ...prev,
       [questionId]: "voted",
     }));
-
-    setLatestPoll((prev) => {
-      if (!prev) return prev;
-
-      const updatedQuestions = prev.PollQuestion?.map((q) => {
-        if (q.id !== questionId) return q;
-
-        return {
-          ...q,
-          options: q.options.map((opt) =>
-            opt.id === optionId
-              ? {
-                  ...opt,
-                  votes: [...opt.votes, { id: "temp", userId: userId ?? "" }],
-                }
-              : opt
-          ),
-        };
-      });
-
-      return {
-        ...prev,
-        PollQuestion: updatedQuestions ?? [],
-      };
-    });
   };
 
   return (
@@ -92,7 +84,7 @@ export default function BottomBar({
         </p>
       </div>
 
-      {/* Poll UI */}
+      {/* Poll Section */}
       <div
         className={`transition-all duration-500 px-20 bg-neutral-600 text-white overflow-hidden ${
           isOpen ? "max-h-[500px] p-6" : "max-h-0 p-0"
@@ -114,6 +106,60 @@ export default function BottomBar({
                 const percent = totalVotes
                   ? Math.round((count / totalVotes) * 100)
                   : 0;
+                {
+                  q.options.map((opt) => {
+                    const count = opt.votes.length;
+                    const percent = totalVotes
+                      ? Math.round((count / totalVotes) * 100)
+                      : 0;
+
+                    const isSelected =
+                      hasVoted && opt.votes.some((v) => v.userId === userId);
+
+                    return (
+                      <div
+                        key={opt.id}
+                        className={`relative group flex items-center justify-between gap-4 px-4 py-3 rounded-xl transition cursor-pointer border border-white/10 ${
+                          isSelected
+                            ? "bg-blue-500/20 border-blue-400"
+                            : hasVoted
+                            ? "bg-white/5"
+                            : "hover:bg-white/10"
+                        }`}
+                        onClick={() => !hasVoted && handleVote(opt.id, q.id)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-5 h-5 rounded-full flex items-center justify-center border ${
+                              isSelected
+                                ? "border-blue-400 bg-blue-400"
+                                : "border-white/40"
+                            }`}
+                          >
+                            {isSelected && (
+                              <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                            )}
+                          </div>
+                          <span className="text-white text-sm">{opt.text}</span>
+                        </div>
+
+                        {hasVoted && (
+                          <span className="text-sm text-white/80">
+                            {percent}%
+                          </span>
+                        )}
+
+                        {hasVoted && (
+                          <div
+                            className="absolute bottom-0 left-0 h-1 bg-blue-400 rounded-full transition-all duration-500"
+                            style={{ width: `${percent}%` }}
+                          />
+                        )}
+                      </div>
+                    );
+                  });
+                }
+
                 const isSelected =
                   hasVoted && opt.votes.some((v) => v.userId === userId);
 

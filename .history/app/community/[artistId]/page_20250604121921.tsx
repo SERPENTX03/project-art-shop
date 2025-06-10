@@ -52,7 +52,7 @@ const ArtistByParam = async ({ params }: ArtistByParamProps) => {
         />
       </div>
 
-      <BottomBar artistId={artistId} userId={userId} />
+      <BottomBar />
     </div>
   );
 };

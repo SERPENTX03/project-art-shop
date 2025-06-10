@@ -4,6 +4,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import { getPostsByArtist } from "@/actions/post";
 import { togglePollVote } from "@/actions/poll";
 import type { Post } from "@/types/post";
+import { useRouter } from "next/navigation";
 
 export default function BottomBar({
   artistId,
@@ -15,39 +16,69 @@ export default function BottomBar({
   const [isOpen, setIsOpen] = useState(false);
   const [latestPoll, setLatestPoll] = useState<Post | null>(null);
   const [voted, setVoted] = useState<Record<string, string>>({});
+  const router = useRouter();
 
   //  โหลดโพสต์ล่าสุดเริ่มต้น
   useEffect(() => {
     const fetchLatest = async () => {
       const posts = await getPostsByArtist(artistId);
 
-      // ❗ เอาโพสต์ล่าสุดที่มี Poll จริง ๆ
-      const latestPost = posts
+      // ❗ หาคำถามล่าสุดที่ user ยังไม่เคยโหวต
+      const unvotedPost = posts
         .filter((post) => post.PollQuestion?.length > 0)
-        .reverse()[0]; // หรือ .slice(-1)[0]
+        .reverse() // เอาโพสต์ล่าสุดสุดก่อน (เพราะคุณเรียง asc ใน Prisma)
+        .find((post) =>
+          post.PollQuestion?.some((q) =>
+            q.options.every((opt) =>
+              opt.votes.every((v) => v.userId !== userId)
+            )
+          )
+        );
 
-      if (!latestPost) return;
+      if (!unvotedPost) return;
 
-      const voteStatus: Record<string, string> = {};
-      latestPost?.PollQuestion?.forEach((q) => {
-        q.options.forEach((opt) => {
-          if (opt.votes.some((v) => v.userId === userId)) {
-            voteStatus[q.id] = "voted";
-          }
-        });
-      });
-
-      setLatestPoll(latestPost);
-      setVoted(voteStatus);
+      setLatestPoll(unvotedPost);
+      setVoted({}); // reset เพราะเรายังไม่ได้โหวตเลย
     };
 
     fetchLatest();
   }, [artistId, userId]);
 
+  //  Auto refresh: เช็คโพสต์ใหม่ทุก 20 วินาที
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const posts = await getPostsByArtist(artistId);
+      const pollPost = posts.find((post) => post.PollQuestion?.length > 0);
+      if (!pollPost) return;
+
+      // เช็คว่าโพสต์ใหม่จริงหรือเปล่า (createdAt ใหม่กว่า)
+      const isNew =
+        !latestPoll ||
+        new Date(pollPost.createdAt) > new Date(latestPoll.createdAt);
+
+      if (isNew) {
+        const voteStatus: Record<string, string> = {};
+        pollPost?.PollQuestion?.forEach((q) => {
+          q.options.forEach((opt) => {
+            if (opt.votes.some((v) => v.userId === userId)) {
+              voteStatus[q.id] = "voted";
+            }
+          });
+        });
+
+        setLatestPoll(pollPost);
+        setVoted(voteStatus);
+      }
+    }, 20000); // ตรวจสอบทุก 20 วินาที
+
+    return () => clearInterval(interval);
+  }, [artistId, userId, latestPoll]);
+
   const handleVote = async (optionId: string, questionId: string) => {
     await togglePollVote(optionId);
 
-    location.reload();
+    router.refresh();
+
     setVoted((prev) => ({
       ...prev,
       [questionId]: "voted",

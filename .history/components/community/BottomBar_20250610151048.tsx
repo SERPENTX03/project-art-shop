@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { IoIosArrowUp } from "react-icons/io";
 import { getPostsByArtist } from "@/actions/post";
@@ -16,20 +17,15 @@ export default function BottomBar({
   const [latestPoll, setLatestPoll] = useState<Post | null>(null);
   const [voted, setVoted] = useState<Record<string, string>>({});
 
-  //  โหลดโพสต์ล่าสุดเริ่มต้น
   useEffect(() => {
-    const fetchLatest = async () => {
+    const fetchLatestPoll = async () => {
       const posts = await getPostsByArtist(artistId);
 
-      // ❗ เอาโพสต์ล่าสุดที่มี Poll จริง ๆ
-      const latestPost = posts
-        .filter((post) => post.PollQuestion?.length > 0)
-        .reverse()[0]; // หรือ .slice(-1)[0]
-
-      if (!latestPost) return;
+      // เลือกโพสต์ล่าสุดที่มี Poll
+      const pollPost = posts.find((post) => post.PollQuestion?.length > 0);
 
       const voteStatus: Record<string, string> = {};
-      latestPost?.PollQuestion?.forEach((q) => {
+      pollPost?.PollQuestion?.forEach((q) => {
         q.options.forEach((opt) => {
           if (opt.votes.some((v) => v.userId === userId)) {
             voteStatus[q.id] = "voted";
@@ -37,22 +33,23 @@ export default function BottomBar({
         });
       });
 
-      setLatestPoll(latestPost);
+      setLatestPoll(pollPost || null);
       setVoted(voteStatus);
     };
 
-    fetchLatest();
+    fetchLatestPoll();
   }, [artistId, userId]);
 
   const handleVote = async (optionId: string, questionId: string) => {
     await togglePollVote(optionId);
 
-    location.reload();
+    // แค่อัปเดต state local ไม่ต้อง fetch ใหม่
     setVoted((prev) => ({
       ...prev,
       [questionId]: "voted",
     }));
 
+    // เพิ่ม dummy vote ไปยัง latestPoll เพื่อ UI เปลี่ยนเป็นเปอร์เซ็นต์ทันที
     setLatestPoll((prev) => {
       if (!prev) return prev;
 
@@ -92,7 +89,7 @@ export default function BottomBar({
         </p>
       </div>
 
-      {/* Poll UI */}
+      {/* Poll Section */}
       <div
         className={`transition-all duration-500 px-20 bg-neutral-600 text-white overflow-hidden ${
           isOpen ? "max-h-[500px] p-6" : "max-h-0 p-0"
@@ -114,6 +111,7 @@ export default function BottomBar({
                 const percent = totalVotes
                   ? Math.round((count / totalVotes) * 100)
                   : 0;
+
                 const isSelected =
                   hasVoted && opt.votes.some((v) => v.userId === userId);
 

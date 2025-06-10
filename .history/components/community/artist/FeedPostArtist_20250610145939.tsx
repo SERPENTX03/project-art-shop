@@ -43,7 +43,7 @@ export default function PostFeed({ posts, avatar }: PostProps) {
 
         return (
           <div key={post.id} className="space-y-2">
-            <div className="relative border  rounded-lg p-4 bg-primary/60 shadow-sm space-y-4">
+            <div className="relative border rounded-lg p-4 bg-primary/70 shadow-sm space-y-4">
               {/* Avatar มุมขวาบน */}
               <div className="absolute top-2 left-full w-10 h-10">
                 <Image
@@ -83,7 +83,10 @@ export default function PostFeed({ posts, avatar }: PostProps) {
                 );
 
                 return (
-                  <div key={qi} className="space-y-2  p-3 rounded-lg">
+                  <div
+                    key={qi}
+                    className="space-y-2 bg-white/10 p-3 rounded-lg"
+                  >
                     <p className="text-white font-medium text-base">
                       {q.question}
                     </p>

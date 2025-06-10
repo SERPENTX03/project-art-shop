@@ -93,9 +93,6 @@ export default function PostFeedInteractive({
       ) : (
         <>
           {posts.map((post) => {
-            const isQuestion =
-              post.PollQuestion && post.PollQuestion.length > 0;
-
             const emojiCount: Record<string, number> = {};
             for (const r of post.Reaction) {
               emojiCount[r.emoji] = (emojiCount[r.emoji] || 0) + 1;
@@ -105,34 +102,16 @@ export default function PostFeedInteractive({
             }
 
             return (
-              <div
-                key={post.id}
-                className={
-                  isQuestion ? "max-w-md mx-auto space-y-2" : "space-y-2"
-                }
-              >
-                <div className="relative border rounded-lg p-4 bg-primary/60 shadow-sm space-y-4">
-                  {isQuestion ? (
-                    <div className="flex justify-center">
-                      <div className="absolute top-0 -translate-y-1/2 w-16 h-16 mb-2">
-                        <Image
-                          src={avatar || "/images/default-avatar.png"}
-                          alt="Artist Avatar"
-                          fill
-                          className="rounded-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="absolute top-2 mr-4 right-full w-10 h-10">
-                      <Image
-                        src={avatar || "/images/default-avatar.png"}
-                        alt="Artist Avatar"
-                        fill
-                        className="rounded-full object-cover ml-1"
-                      />
-                    </div>
-                  )}
+              <div key={post.id} className="space-y-2">
+                <div className="relative border rounded-lg p-4 bg-primary/70 shadow-sm space-y-4">
+                  <div className="absolute top-2 left-full w-10 h-10">
+                    <Image
+                      src={avatar || "/images/default-avatar.png"}
+                      alt="Artist Avatar"
+                      fill
+                      className="rounded-full object-cover ml-1"
+                    />
+                  </div>
 
                   {post.content && (
                     <p className="text-white whitespace-pre-line">
@@ -155,7 +134,6 @@ export default function PostFeedInteractive({
                     </div>
                   )}
 
-                  {/* PollQuestion  */}
                   {post.PollQuestion?.map((q) => {
                     const totalVotes = q.options.reduce(
                       (sum, o) => sum + o.votes.length,
@@ -164,7 +142,10 @@ export default function PostFeedInteractive({
                     const hasVoted = voted[q.id] !== undefined;
 
                     return (
-                      <div key={q.id} className="space-y-2 p-3 rounded-lg">
+                      <div
+                        key={q.id}
+                        className="space-y-2 bg-white p-3 rounded-lg"
+                      >
                         <p className="text-white font-medium text-base">
                           {q.question}
                         </p>
@@ -176,6 +157,7 @@ export default function PostFeedInteractive({
                               const percent = totalVotes
                                 ? Math.round((count / totalVotes) * 100)
                                 : 0;
+
                               return (
                                 <div key={opt.id}>
                                   <div className="flex justify-between text-white text-sm">
@@ -184,7 +166,7 @@ export default function PostFeedInteractive({
                                   </div>
                                   <div className="w-full bg-white/20 rounded-full h-3 mt-1 mb-2">
                                     <div
-                                      className="h-3 rounded-full transition-all duration-300 bg-blue-400"
+                                      className={`h-3 rounded-full transition-all duration-300 bg-blue-400`}
                                       style={{
                                         width:
                                           percent === 0 ? "4%" : `${percent}%`,
@@ -244,7 +226,6 @@ export default function PostFeedInteractive({
                   })}
                 </div>
 
-                {/* Emoji reactions */}
                 <div className="flex gap-2 px-2 flex-wrap">
                   {defaultEmojis.map((emoji) => {
                     const isActive =

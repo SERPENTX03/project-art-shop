@@ -10,7 +10,6 @@ import {
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { createPollPost } from "@/actions/poll";
-import { Button } from "@/components/ui/button";
 
 export default function CreatePollDialog() {
   const [open, setOpen] = useState(false);
@@ -62,7 +61,9 @@ export default function CreatePollDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>โพสต์แบบโหวต</Button>
+        <button className="bg-primary text-white px-4 py-1 rounded-full text-sm">
+          โพสต์แบบโหวต
+        </button>
       </DialogTrigger>
       <DialogContent className="max-w-xl">
         <div className="space-y-4">

@@ -62,7 +62,7 @@ export default function CreatePollDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>โพสต์แบบโหวต</Button>
+        <Button className="">โพสต์แบบโหวต</Button>
       </DialogTrigger>
       <DialogContent className="max-w-xl">
         <div className="space-y-4">

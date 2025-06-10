@@ -8,7 +8,6 @@ import { GrEmoji } from "react-icons/gr";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import CreatePollDialog from "./CreatePollDialog";
-import { Button } from "@/components/ui/button";
 
 //  Load Emoji Picker dynamically (เพราะ next/image)
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
@@ -104,9 +103,13 @@ export default function CreatePostBar() {
             )}
           </div>
 
-          <Button onClick={handleSubmit} disabled={isPending}>
+          <button
+            onClick={handleSubmit}
+            disabled={isPending}
+            className="ml-2 bg-primary text-white text-sm px-3 py-1 rounded-full hover:bg-primary/80 transition"
+          >
             {isPending ? "โพสต์..." : "โพสต์"}
-          </Button>
+          </button>
           <CreatePollDialog />
         </div>
       </div>

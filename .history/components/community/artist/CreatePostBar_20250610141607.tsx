@@ -63,7 +63,7 @@ export default function CreatePostBar() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="SENT MESSAGE"
-            className=" ml-3 outline-none bg-transparent text-xl  h-[80%] w-full"
+            className=" ml-3 outline-none bg-transparent text-xl  h-[80%] w-[80%]"
           />
         </div>
 
