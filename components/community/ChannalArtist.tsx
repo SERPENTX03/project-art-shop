@@ -12,8 +12,6 @@ interface ArtistsProps {
 const ChannalArtist = ({ artists }: ArtistsProps) => {
   const [isOpen, setOpen] = useState<boolean>(false);
 
-  console.log(isOpen);
-
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };

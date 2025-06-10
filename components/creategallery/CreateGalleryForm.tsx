@@ -24,7 +24,7 @@ export default function CreateGalleryForm() {
           const formData = new FormData(formRef.current!);
 
           //  ตรวจขนาดรวมของไฟล์ทั้งหมด
-          const maxTotalSize = 10 * 1024 * 1024; // 10MB
+          const maxTotalSize = 20 * 1024 * 1024; // 20MB
           let totalSize = 0;
 
           for (const [, value] of formData.entries()) {

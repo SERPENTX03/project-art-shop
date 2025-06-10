@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import PayoutList from "./PayoutList";
+import { OrderItem } from "@prisma/client";
 
 interface GalleryItem {
   id: string;
@@ -25,10 +26,7 @@ interface GalleryItem {
     accountName?: string | null;
     accountNumber?: string | null;
   } | null;
-  orderItems?: {
-    id: string;
-    paidToShop: boolean;
-  }[];
+  orderItems?: OrderItem[];
 }
 
 interface Props {
@@ -55,9 +53,21 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
     galleryId: string,
     shopId: string,
     amount: number,
-    orderItemIds: string[]
+    orderItemIds: string[],
+    orderItems: { id: string; deliveryStatus?: string }[]
   ) => {
     if (!orderItemIds.length) return;
+
+    const notDelivered = orderItems.filter(
+      (item) => item.deliveryStatus !== "DELIVERED"
+    );
+
+    if (notDelivered.length > 0) {
+      alert(
+        `ไม่สามารถยืนยันการโอนได้ เนื่องจากยังมีรายการที่ยังจัดส่งไม่สำเร็จ (${notDelivered.length} รายการ)`
+      );
+      return;
+    }
 
     try {
       setLoadingIds((prev) => [...prev, galleryId]);
@@ -76,11 +86,13 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
 
       const data = await res.json();
       if (data.success) {
-        // อัปเดตบน frontend ด้วย setState ถ้าต้องการ
-        window.location.reload(); // รีเฟรชเพื่อโหลดข้อมูลใหม่
+        window.location.reload();
+      } else {
+        alert(data.error || "เกิดข้อผิดพลาดในการยืนยัน");
       }
     } catch (err) {
       console.error("Payout failed", err);
+      alert("เกิดข้อผิดพลาด");
     } finally {
       setLoadingIds((prev) => prev.filter((id) => id !== galleryId));
     }
@@ -119,7 +131,16 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
           return (
             <Card className="bg-white border p-4 shadow" key={gallery.id}>
               <CardContent className="p-4 space-y-2">
-                <h2 className="font-semibold text-lg">{gallery.title}</h2>
+                <div className="flex justify-between">
+                  <h2 className="font-semibold text-lg">{gallery.title}</h2>
+                  <div className="text-sm text-muted-foreground">
+                    {gallery.orderItems?.[0]?.deliveryStatus && (
+                      <span>
+                        Delivery: {gallery.orderItems[0].deliveryStatus}
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   🧾 ขายแล้ว {gallery.soldCount} ชิ้น
                 </p>
@@ -142,7 +163,8 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
                       gallery.id,
                       artist!.id,
                       totalAmount,
-                      unpaidOrderItems.map((i) => i.id)
+                      unpaidOrderItems.map((i) => i.id),
+                      unpaidOrderItems
                     )
                   }
                   className="w-full"

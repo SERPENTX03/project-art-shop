@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import CardTrending from "./CardTrending";
 import FilterCategories from "./FilterCategories";
+import CardBestSeller from "./CardBestSeller";
 
 type Props = {
   searchParams: {
@@ -25,7 +26,7 @@ const CardMainContainer = async ({ searchParams = {} }: Props) => {
 
       <h1 className="text-2xl font-semibold mb-4 mt-24">BEST SELLER</h1>
       <section className="grid sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5 w-full gap-6">
-        {/* <CardBestSeller /> */}
+        <CardBestSeller />
       </section>
     </>
   );
