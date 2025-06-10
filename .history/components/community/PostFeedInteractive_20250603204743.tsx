@@ -106,7 +106,7 @@ export default function PostFeedInteractive({
                 <div className="relative border rounded-lg p-4 bg-primary/70 shadow-sm space-y-4">
                   <div className="absolute top-2 left-full w-10 h-10">
                     <Image
-                      src={avatar || "/images/default-avatar.png"}
+                      src={avatar || "/images/defalut-avatar.png"}
                       alt="Artist Avatar"
                       fill
                       className="rounded-full object-cover ml-1"

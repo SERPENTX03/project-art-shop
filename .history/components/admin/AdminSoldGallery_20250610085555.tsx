@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +28,7 @@ interface GalleryItem {
     accountName?: string | null;
     accountNumber?: string | null;
   } | null;
-  orderItems?: (OrderItem & { deliveryStatus?: string })[];
+  orderItems?: OrderItem[];
 }
 
 interface Props {
@@ -50,14 +49,13 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
   const [loadingIds, setLoadingIds] = useState<string[]>([]);
   const router = useRouter();
 
-  const unpaidOrderItems = galleries.flatMap((gallery) =>
-    (gallery.orderItems || [])
-      .filter((item) => !item.paidToShop)
-      .map((item) => ({ ...item, gallery }))
+  // 🔁 กรองเฉพาะ gallery ที่มี orderItem ยังไม่จ่าย
+  const unpaidGalleries = galleries.filter((g) =>
+    g.orderItems?.some((item) => item.paidToShop === false)
   );
 
-  const totalPage = Math.ceil(unpaidOrderItems.length / pageSize);
-  const pageItems = unpaidOrderItems.slice(
+  const totalPage = Math.ceil(unpaidGalleries.length / pageSize);
+  const pageItems = unpaidGalleries.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
@@ -83,7 +81,7 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
     }
 
     try {
-      setLoadingIds((prev) => [...prev, orderItemIds[0]]);
+      setLoadingIds((prev) => [...prev, galleryId]);
 
       const res = await fetch("/api/payout", {
         method: "POST",
@@ -108,7 +106,7 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
       console.error("Payout failed", err);
       alert("เกิดข้อผิดพลาด");
     } finally {
-      setLoadingIds((prev) => prev.filter((id) => id !== orderItemIds[0]));
+      setLoadingIds((prev) => prev.filter((id) => id !== galleryId));
     }
   };
 
@@ -128,40 +126,42 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
         </Dialog>
 
         <div className="text-muted-foreground text-sm">
-          รวมทั้งหมด: {unpaidOrderItems.length} รายการ
+          รวมทั้งหมด: {unpaidGalleries.length} รายการ
         </div>
       </div>
 
       <Separator />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pageItems.map((item) => {
-          const gallery = item.gallery;
+        {pageItems.map((gallery) => {
           const artist = gallery.artist;
-          const isLoading = loadingIds.includes(item.id);
-          const amount = gallery.price * item.quantity;
+          const isLoading = loadingIds.includes(gallery.id);
+          const unpaidOrderItems =
+            gallery.orderItems?.filter((i) => !i.paidToShop) || [];
+          const totalAmount = unpaidOrderItems.length * gallery.price;
 
+          const latestUnpaid = unpaidOrderItems[0];
           return (
-            <Card key={item.id} className="bg-white border p-4 shadow">
+            <Card className="bg-white border p-4 shadow" key={gallery.id}>
               <CardContent className="p-4 space-y-2">
                 <div className="flex justify-between">
                   <h2 className="font-semibold text-lg">{gallery.title}</h2>
-                  <span className="text-sm text-muted-foreground">
-                    🚚 สถานะ:{" "}
-                    {deliveryStatusLabel[item.deliveryStatus || "PENDING"]}
-                  </span>
+                  <div className="text-sm text-muted-foreground">
+                    {gallery.orderItems?.[0]?.deliveryStatus && (
+                      <span>
+                        🚚 สถานะ:{" "}
+                        {deliveryStatusLabel[latestUnpaid.deliveryStatus]}
+                      </span>
+                    )}
+                  </div>
                 </div>
-
                 <p className="text-sm text-muted-foreground">
-                  จำนวน: {item.quantity} ชิ้น / ราคาต่อชิ้น: {gallery.price} บาท
+                  🧾 ขายแล้ว {gallery.soldCount} ชิ้น
                 </p>
-
                 <p className="text-sm text-muted-foreground">
-                  💰 ยอดรวม: {amount} บาท
+                  💰 รอโอน {unpaidOrderItems.length} ชิ้น = {totalAmount} บาท
                 </p>
-
                 <Separator />
-
                 <div className="text-sm text-muted-foreground space-y-1">
                   <p>🏪 ร้าน: {artist?.name}</p>
                   <p>📞 {artist?.phone}</p>
@@ -169,20 +169,16 @@ export default function AdminSoldGallery({ galleries, pageSize = 6 }: Props) {
                   <p>ชื่อบัญชี: {artist?.accountName}</p>
                   <p>เลขบัญชี: {artist?.accountNumber}</p>
                 </div>
-
                 <Separator />
-
                 <Button
-                  disabled={
-                    isLoading || !artist || item.deliveryStatus !== "DELIVERED"
-                  }
+                  disabled={isLoading || !artist || !unpaidOrderItems.length}
                   onClick={() =>
                     handlePayout(
                       gallery.id,
                       artist!.id,
-                      amount,
-                      [item.id],
-                      [item]
+                      totalAmount,
+                      unpaidOrderItems.map((i) => i.id),
+                      unpaidOrderItems
                     )
                   }
                   className="w-full"

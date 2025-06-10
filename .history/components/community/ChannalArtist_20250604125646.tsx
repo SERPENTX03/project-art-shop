@@ -2,7 +2,7 @@
 import { ArtistProfile } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { SlArrowDown } from "react-icons/sl";
 
 interface ArtistsProps {
@@ -11,43 +11,24 @@ interface ArtistsProps {
 
 const ChannalArtist = ({ artists }: ArtistsProps) => {
   const [isOpen, setOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div className="absolute right-0 top-0 h-full" ref={dropdownRef}>
+    <div className="absolute right-0 top-0 h-full">
       <div
         onClick={handleOpen}
-        className="relative h-full w-[80px] rounded-full flex justify-center items-center text-2xl border border-slate-500 cursor-pointer"
+        className="relative cursor-pointer h-full w-[80px] rounded-full flex justify-center items-center text-2xl border border-slate-500"
       >
         <span className="mr-1">CM</span>
         <SlArrowDown size={18} />
 
         <div
           className={`absolute right-0 top-full border border-primary
-           p-2 w-[200px] bg-white rounded-xl z-50 transition-all duration-500 ease-in-out
-           ${
-             isOpen
-               ? "opacity-100 pointer-events-auto"
-               : "opacity-0 pointer-events-none"
-           }`}
+           p-2 w-[200px] bg-white rounded-xl z-50  transition-all duration-500 ease-in-out
+           ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
           <h2 className="text-lg text-center font-semibold text-primary/70 border-b border-primary/80">
             ช่องอื่นๆ
@@ -57,7 +38,7 @@ const ChannalArtist = ({ artists }: ArtistsProps) => {
               <Link
                 href={`/community/${art.id}`}
                 key={art.id}
-                className="cursor-pointer text-sm flex items-center justify-between py-2 hover:bg-primary/20 px-2 rounded-2xl transition-colors duration-300 ease-in-out"
+                className="text-sm flex items-center justify-between py-2 hover:bg-primary/20 px-2 rounded-2xl transition-colors duration-300 ease-in-out"
               >
                 {art.name}
                 <Image
@@ -76,5 +57,4 @@ const ChannalArtist = ({ artists }: ArtistsProps) => {
     </div>
   );
 };
-
 export default ChannalArtist;

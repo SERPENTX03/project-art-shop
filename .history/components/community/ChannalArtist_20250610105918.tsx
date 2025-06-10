@@ -18,10 +18,10 @@ const ChannalArtist = ({ artists }: ArtistsProps) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(e?.target as Node)
       ) {
         setOpen(false);
       }
@@ -35,19 +35,15 @@ const ChannalArtist = ({ artists }: ArtistsProps) => {
     <div className="absolute right-0 top-0 h-full" ref={dropdownRef}>
       <div
         onClick={handleOpen}
-        className="relative h-full w-[80px] rounded-full flex justify-center items-center text-2xl border border-slate-500 cursor-pointer"
+        className="relative  h-full w-[80px] rounded-full flex justify-center items-center text-2xl border border-slate-500"
       >
         <span className="mr-1">CM</span>
         <SlArrowDown size={18} />
 
         <div
           className={`absolute right-0 top-full border border-primary
-           p-2 w-[200px] bg-white rounded-xl z-50 transition-all duration-500 ease-in-out
-           ${
-             isOpen
-               ? "opacity-100 pointer-events-auto"
-               : "opacity-0 pointer-events-none"
-           }`}
+           p-2 w-[200px] bg-white rounded-xl z-50  transition-all duration-500 ease-in-out
+           ${isOpen ? "opacity-100" : "opacity-0"}`}
         >
           <h2 className="text-lg text-center font-semibold text-primary/70 border-b border-primary/80">
             ช่องอื่นๆ
@@ -76,5 +72,4 @@ const ChannalArtist = ({ artists }: ArtistsProps) => {
     </div>
   );
 };
-
 export default ChannalArtist;
