@@ -4,24 +4,32 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import AddressUser from "@/components/cart/checkout/AddressUser";
 import PaymentTabs from "@/components/cart/checkout/PaymentTabs";
-import { getUserAddresses } from "@/actions/address";
-import { fetchArtist } from "@/actions/artist"; // <- import action
+import { fetchArtist } from "@/actions/artist";
 import { useAddressStore } from "@/store/addressStore";
+import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cart";
 
 type CheckoutOrder = {
   artistId: string;
-  artistName?: string; 
+  artistName?: string;
   items: CartItem[];
   subtotal: number;
-  shippingFee: number; 
+  shippingFee: number;
   total: number;
 };
 
-const Checkout = () => {
+export default function Checkout() {
   const [orders, setOrders] = useState<CheckoutOrder[]>([]);
+  const { address } = useAddressStore();
+  const router = useRouter();
 
-  // คำนวณค่าส่งตามขนาดภาพ
+  // ถ้าไม่มี address → redirect ออก
+  useEffect(() => {
+    if (!address) {
+      router.replace("/cart");
+    }
+  }, [address, router]);
+
   const calculateSizeShipping = (sizeCm: number): number => {
     if (sizeCm < 100) return 100;
     else if (sizeCm <= 150) return 300;
@@ -31,28 +39,15 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    const { setAddress, setLoading } = useAddressStore.getState();
-    getUserAddresses().then((res) => {
-      const addresses = res.addresses ?? [];
-      if (res.success && addresses.length > 0) {
-        setAddress(addresses[0]);
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
     const ordersData = localStorage.getItem("checkoutOrders");
     if (ordersData) {
       const parsedOrders = JSON.parse(ordersData) as CheckoutOrder[];
-
-      // ดึงชื่อศิลปินทีละคน
       Promise.all(
         parsedOrders.map(async (order) => {
           const artist = await fetchArtist(order.artistId);
           return {
             ...order,
-            artistName: artist?.name ?? order.artistId, // ถ้าไม่มี name จะ fallback เป็น id
+            artistName: artist?.name ?? order.artistId,
           };
         })
       ).then((ordersWithNames) => {
@@ -61,11 +56,12 @@ const Checkout = () => {
     }
   }, []);
 
-  // คำนวณราคารวมทั้งหมด
   const productTotal = orders.reduce((sum, order) => sum + order.subtotal, 0);
   const shippingTotal = orders.reduce((sum, order) => {
     const sizeShipping = order.items.reduce(
-      (s, item) => s + calculateSizeShipping(item.gallery.imageSize ?? 0) * item.quantity,
+      (s, item) =>
+        s +
+        calculateSizeShipping(item.gallery.imageSize ?? 0) * item.quantity,
       0
     );
     return sum + sizeShipping + order.shippingFee;
@@ -83,7 +79,9 @@ const Checkout = () => {
               ออเดอร์จากศิลปิน {order.artistName}
             </h3>
             {order.items.map((item) => {
-              const sizeFee = calculateSizeShipping(item.gallery.imageSize ?? 0);
+              const sizeFee = calculateSizeShipping(
+                item.gallery.imageSize ?? 0
+              );
               return (
                 <div
                   key={item.id}
@@ -98,7 +96,9 @@ const Checkout = () => {
                     />
                     <div>
                       <p className="font-medium">{item.gallery.title}</p>
-                      <p className="text-sm text-gray-500">จำนวน: {item.quantity}</p>
+                      <p className="text-sm text-gray-500">
+                        จำนวน: {item.quantity}
+                      </p>
                       <p className="text-sm text-gray-500">
                         ขนาดภาพ: {item.gallery.imageSize ?? "-"} cm
                       </p>
@@ -122,7 +122,7 @@ const Checkout = () => {
         ))}
       </div>
 
-      {/* สรุปทั้งหมด */}
+      {/* สรุปราคา */}
       <div className="mt-8 border-t pt-4 text-right space-y-2">
         <p className="text-lg">
           รวมราคาสินค้า: <span className="font-semibold">{productTotal} ฿</span>
@@ -140,8 +140,7 @@ const Checkout = () => {
       <PaymentTabs
         items={orders.flatMap((o) => o.items)}
         total={grandTotal}
-      />    </section>
+      />
+    </section>
   );
-};
-
-export default Checkout;
+}
