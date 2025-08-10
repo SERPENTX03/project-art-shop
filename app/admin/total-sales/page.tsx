@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
@@ -15,6 +14,7 @@ import {
 import { getTotalSalesAllShops } from "@/actions/getTotalSale";
 
 export default function DashboardPage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [data, setData] = useState<any[]>([]);
   const [filter, setFilter] = useState("today");
   const [customRange, setCustomRange] = useState<[Date | null, Date | null]>([null, null]);
