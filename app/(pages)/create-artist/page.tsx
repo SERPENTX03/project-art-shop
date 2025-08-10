@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useTransition } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Input } from "@/components/ui/input";
@@ -9,8 +9,11 @@ import { Separator } from "@/components/ui/separator";
 import { useEffect } from "react";
 import { createArtist, FormState } from "@/actions/artist";
 import { useRouter } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { provinceRegion } from "@/data/provinceRegion";
 
 export default function CreateArtistForm() {
+  const [province, setProvince] = useState<string>("");
   const initialState: FormState = { success: false };
   const [state, formAction] = useActionState(createArtist, initialState);
   const { register } = useForm();
@@ -88,6 +91,27 @@ export default function CreateArtistForm() {
             required
           />
         </div>
+
+        <div className="space-y-2">
+  <Label htmlFor="address">Address Shipping</Label>
+
+  <Select  onValueChange={(value) => setProvince(value)} required>
+    <SelectTrigger className="w-full">
+      <SelectValue placeholder="Select Province" />
+    </SelectTrigger>
+    <SelectContent>
+      {Object.keys(provinceRegion).map((province) => (
+        <SelectItem key={province} value={province}>
+          {province}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+
+  {/* ส่งค่า province ไปกับ form */}
+  <input type="hidden" name="address" value={province} />
+</div>
+
       </div>
 
       {/* Bank Info */}

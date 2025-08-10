@@ -9,5 +9,11 @@ export type CartItem = {
     description: string | null;
     quantity: number;
     imageSize: number;
+    userId: string;
+    artist?: {
+      id: string;
+      name: string;
+      addressProvince: string; 
+    };
   };
 };

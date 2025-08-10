@@ -1,3 +1,4 @@
+import { fetchArtist } from "@/actions/artist";
 import { fetchGalleryById } from "@/actions/gallery";
 import AddtoCart from "@/components/galleryById/AddtoCart";
 import BreadcrumComponent from "@/components/galleryById/Breadcrumb";
@@ -9,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 const GalleryId = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const gallery = await fetchGalleryById(id);
+  const artist = await fetchArtist(gallery.userId);
+  console.log(artist)
   return (
     <section className="mt-6">
       <BreadcrumComponent title={gallery.title} />

@@ -1,4 +1,4 @@
-import { ListTodo, Home, ClockArrowUp, Package, Undo2 } from "lucide-react";
+import { ListTodo, Home, ClockArrowUp, Package, Undo2, DollarSign } from "lucide-react";
 
 export const items = [
   {
@@ -10,6 +10,11 @@ export const items = [
     title: "Gallery List",
     url: "/dashboard/gallery-list",
     icon: ListTodo,
+  },
+  {
+    title: "Total Sales",
+    url: "/dashboard/orders",
+    icon: DollarSign,
   },
   {
     title: "Order Return",
@@ -43,5 +48,10 @@ export const adminNav = [
     title: "Payout",
     url: "/admin/payout",
     icon: ClockArrowUp,
+  },
+  {
+    title: "Total Sales",
+    url: "/admin/total-sales",
+    icon: DollarSign,
   },
 ];

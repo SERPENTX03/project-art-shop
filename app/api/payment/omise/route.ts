@@ -51,6 +51,7 @@ export async function POST(req: Request) {
         );
       }
 
+
       // ✅ คำนวณราคาสินค้า
       productTotal += product.price * item.quantity;
 

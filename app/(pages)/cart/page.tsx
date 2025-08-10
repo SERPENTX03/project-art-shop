@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { getUserAllCart } from "@/actions/cart";
 import { CartItem } from "@/types/cart";
 import CartTable from "@/components/cart/CartTable";
@@ -29,13 +28,14 @@ const Cart = () => {
     }
   }, [items]);
 
-  const quantityTotal = items
-    .filter((item) => selected.has(item.id))
-    .reduce((sum, item) => sum + item.quantity, 0);
+  const selectedItems = items.filter((item) => selected.has(item.id));
 
-  const total = items
-    .filter((item) => selected.has(item.id))
-    .reduce((sum, item) => sum + item.quantity * item.gallery.price, 0);
+  const quantityTotal = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const total = selectedItems.reduce(
+    (sum, item) => sum + item.quantity * item.gallery.price,
+    0
+  );
 
   return (
     <div className="m-8 pb-32 max-h-[calc(100vh-150px)] overflow-auto">
@@ -49,8 +49,7 @@ const Cart = () => {
       <LinkToPayment
         quantityTotal={quantityTotal}
         total={total}
-        selected={selected}
-        items={items}
+        selectedItems={selectedItems}
       />
     </div>
   );

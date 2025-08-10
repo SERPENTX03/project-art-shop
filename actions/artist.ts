@@ -21,6 +21,7 @@ const createShopSchema = z.object({
   accountName: z.string().min(2),
   accountNumber: z.string().min(8),
   promptpayId: z.string().optional(),
+  address: z.string().min(2),
 });
 
 export async function createArtist(
@@ -62,6 +63,8 @@ export async function createArtist(
     const accountName = formData.get("accountName") as string;
     const accountNumber = formData.get("accountNumber") as string;
     const promptpayId = formData.get("promptpayId") as string | null;
+    const address = formData.get("address") as string;
+
 
     // Validate ด้วย Zod
     const validated = createShopSchema.safeParse({
@@ -71,6 +74,7 @@ export async function createArtist(
       accountName,
       accountNumber,
       promptpayId: promptpayId || undefined,
+      address,
     });
 
     if (!validated.success) {
@@ -101,6 +105,7 @@ export async function createArtist(
         accountName: validated.data.accountName,
         accountNumber: validated.data.accountNumber,
         promptpayId: validated.data.promptpayId,
+        address: validated.data.address,
         user: {
           connect: { clerkId },
         },
