@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
@@ -14,9 +15,8 @@ import {
 import { getTotalSalesAllShops } from "@/actions/getTotalSale";
 
 export default function DashboardPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [data, setData] = useState<any[]>([]);
-  const [filter, setFilter] = useState("today");
+  const [filter, setFilter] = useState("all"); // ✅ เริ่มต้นเป็นทั้งหมด
   const [customRange, setCustomRange] = useState<[Date | null, Date | null]>([null, null]);
   const [isPending, startTransition] = useTransition();
 
@@ -39,6 +39,10 @@ export default function DashboardPage() {
       } else if (filter === "custom" && customRange[0] && customRange[1]) {
         startDate = customRange[0];
         endDate = customRange[1];
+      } else if (filter === "all") {
+        // ✅ ไม่มี startDate / endDate → ดึงทั้งหมด
+        startDate = undefined;
+        endDate = undefined;
       }
 
       const result = await getTotalSalesAllShops(startDate, endDate);
@@ -57,6 +61,7 @@ export default function DashboardPage() {
             <SelectValue placeholder="เลือกช่วงเวลา" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">ทั้งหมด</SelectItem> {/* ✅ เพิ่ม option */}
             <SelectItem value="today">วันนี้</SelectItem>
             <SelectItem value="month">เดือนนี้</SelectItem>
             <SelectItem value="year">ปีนี้</SelectItem>
